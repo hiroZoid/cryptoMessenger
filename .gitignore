@@ -33,3 +33,4 @@ node_modules
 .node_repl_history
 
 # Visual Studio Code project settings
+jsconfig.json
