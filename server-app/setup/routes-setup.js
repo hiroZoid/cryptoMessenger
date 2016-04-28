@@ -15,8 +15,5 @@ module.exports = function (app) {
         response.end('It Works!! Path Hit: ' + request.url);
     });
 
-    app.listen(80, function () {
-        console.log("Server listening on: http://localhost:80");
-    });
-
+    console.log('routes-setup.js executed.');
 };

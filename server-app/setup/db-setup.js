@@ -1,26 +1,31 @@
 "use strict";
 
-var mongoose = require('mongoose');
+module.exports = function () {
 
-mongoose.connect('mongodb://localhost/cryptoMessenger');
+    let mongoose = require('mongoose');
 
-var db = mongoose.connection;
+    mongoose.connect('mongodb://localhost/cryptoMessenger');
 
-db.once('open', function () {
-    console.log("Sucessfully connected to MongoDB.");
-});
+    var db = mongoose.connection;
 
-db.on('disconnected', function () {
-    console.log('Disconnected from MongoDB.');
-});
-
-db.on('error', function (err) {
-    console.log('MongoDB connection error: ' + err);
-});
-
-process.on('SIGINT', function () {
-    mongoose.connection.close(function name(params) {
-        console.log('MongoDB disconnected on SIGINT triggered.');
-        process.exit(0);
+    db.once('open', function () {
+        console.log("Sucessfully connected to MongoDB.");
     });
-});
+
+    db.on('disconnected', function () {
+        console.log('Disconnected from MongoDB.');
+    });
+
+    db.on('error', function (err) {
+        console.log('MongoDB connection error: ' + err);
+    });
+
+    process.on('SIGINT', function () {
+        mongoose.connection.close(function () {
+            console.log('MongoDB disconnected on SIGINT triggered.');
+            process.exit(0);
+        });
+    });
+
+    console.log('db-setup.js executed.');
+};

@@ -2,6 +2,9 @@
 define(function (require) {
     var App = require('./controllers/App');
     var app = new App(document.body);
+    var socket = require('/socket.io/socket.io.js')();
+
+    socket.emit('message', { message: 'shitless', from: 'me', to: 'you' });
 
     var avatarImgUrl = 'stormtrooper.jpeg';
     app.setData({

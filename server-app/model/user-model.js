@@ -9,9 +9,16 @@ var userSchema = new mongoose.Schema({
 
 var userModel = mongoose.model('user', userSchema);
 
-module.exports.authenticate = function (username, password) {
+module.exports.retrieve = function (username, password) {
     return userModel.findOne({
         username: username,
         password: password
-    }).select('_id').exec();
+    }).exec();
+};
+
+module.exports.save = function (username, password) {
+    return new userModel({
+        username: username,
+        password: password
+    }).save();
 };
