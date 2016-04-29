@@ -16,6 +16,11 @@ module.exports.retrieve = function (username, password) {
     }).exec();
 };
 
+module.exports.retrieveAll = function () {
+    return userModel.find({}).select('_id username').exec();
+};
+
+
 module.exports.save = function (username, password) {
     return new userModel({
         username: username,

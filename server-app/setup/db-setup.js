@@ -6,7 +6,7 @@ module.exports = function () {
 
     mongoose.connect('mongodb://localhost/cryptoMessenger');
 
-    var db = mongoose.connection;
+    let db = mongoose.connection;
 
     db.once('open', function () {
         console.log("Sucessfully connected to MongoDB.");

@@ -55,6 +55,12 @@ define(function (require) {
             }
             this.renderAll(children);
         };
+        
+        this.remove = function () {
+            if (view.parentNode === parentElement) {
+                parentElement.removeChild(view);
+            }
+        };
 
         // =====================================================================
     };

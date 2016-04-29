@@ -8,7 +8,7 @@ var httpServer = app.listen(80, function () {
     console.log("Server listening on: http://localhost:80");
 });
 
-require('./server-app/setup/socket-setup.js')(httpServer);
+require('./server-app/setup/socket-setup.js').setup(httpServer);
 
 /*
 var userModel = require('./server-app/model/user-model.js');

@@ -23,6 +23,11 @@ define(function (require) {
         };
 
         children.viewStack.subtractFromHeight(children.navBar.getStyleHeight());
+        
+        this.menuItemClicked = function (clickedItem) {
+            children.viewStack.menuItemClicked(clickedItem);
+            children.viewStack.render();
+        };
 
         var data = null;
         this.setData = function (newData) {

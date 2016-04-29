@@ -1,21 +1,36 @@
 "use strict";
 
-module.exports = function (httpServer) {
+var socketProxy = require('../proxy/socket-proxy.js');
+var io;
 
-    var io = require('socket.io').listen(httpServer);
-    
+module.exports.setup = function (httpServer) {
+
+    io = require('socket.io').listen(httpServer);
+
     io.on('connection', function (socket) {
+
+        socketProxy.userConnected(socket);
         console.log('Socket client connected');
-        
-        socket.on('disconnect', function (transportCloseMessage) {
+
+        socket.on('disconnect', function () {
+            socketProxy.userDisconnected(socket);
             console.log('Socket client disconnected.');
-            console.log(transportCloseMessage);            
         });
-        
+
         socket.on('message', function (message) {
             console.log(message);
         })
+
+        socket.on('login', function (credentials) {
+            socketProxy.loginUser(socket, credentials.username, credentials.password);
+            console.log(credentials);
+        })
+        
+        socket.on('signup', function (credentials) {
+            socketProxy.loginUser(socket, credentials.username, credentials.password);
+            console.log(credentials);
+        })
     });
-    
+
     console.log('socket-setup.js executed.');
 };
