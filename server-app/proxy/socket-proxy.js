@@ -2,6 +2,8 @@
 
 var userDao = require('../dao/user-dao.js');
 var socketSetup = require('../setup/socket-setup.js');
+var appConstants = require('../app-constants.js');
+
 var users = {};
 
 module.exports.userConnected = function (socket) {
@@ -21,12 +23,12 @@ module.exports.isUserLogged = function (socket) {
 module.exports.loginUser = function (socket, username, password) {
     userDao.retrieve(username, password).then(function (user) {
         if (user == null) {
-            socket.emit('invalidCredentials', null);
+            socket.emit(appConstants.SOCKET_INVALID_CREDENTIALS, null);
         } else {
             console.log('user retrieved', user);
             users[socket.id].user = user;
             userDao.retrieveAll().then(function (contactList) {
-                socket.emit('contactList', contactList);
+                socket.emit(appConstants.SOCKET_SENDING_CONTACT_LIST, contactList);
                 console.log('contactList retrieved');
             });
         }
@@ -34,6 +36,6 @@ module.exports.loginUser = function (socket, username, password) {
     }).catch(function (err) {
         console.log('user not retrieved');
     });
-    
+
 };
 

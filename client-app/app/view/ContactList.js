@@ -7,8 +7,6 @@ define(function (require) {
     return function ContactList(parentController, parentElement) {
         // =====================================================================
         
-        AbstractView.call(this);
-
         var view = document.createElement('div');
         view.setAttribute('name', this.constructor.name);
         view.style.width = '100%';
@@ -27,11 +25,8 @@ define(function (require) {
 
         this.render = function () {
             console.log('ContactList.render()');
-            if (view.parentNode !== parentElement) {
-                parentElement.appendChild(view);
-            }
-
-            this.removeAllChildrenFrom(view);
+            AbstractView.append(view, parentElement);
+            AbstractView.removeAllChildrenFrom(view);
 
             for (var i = 0; i < data.length; i++) {
                 var img = document.createElement('img');

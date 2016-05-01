@@ -21,8 +21,6 @@ define(function (require) {
     return function NavBar(parentController, parentElement) {
         // =====================================================================
 
-        AbstractView.call(this);
-
         var view = document.createElement('div');
         view.setAttribute('name', this.constructor.name);
         view.style.width = 'calc(100% - 0.25em)';
@@ -68,9 +66,7 @@ define(function (require) {
 
         this.render = function () {
             console.log('NavBar.render()');
-            if (view.parentNode !== parentElement) {
-                parentElement.appendChild(view);
-            }
+            AbstractView.append(view, parentElement);
         };
 
         // =====================================================================

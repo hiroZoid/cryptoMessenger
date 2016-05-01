@@ -1,11 +1,10 @@
 "use strict";
 
-var socketProxy = require('../proxy/socket-proxy.js');
-var io;
-
 module.exports.setup = function (httpServer) {
 
-    io = require('socket.io').listen(httpServer);
+    let io = require('socket.io').listen(httpServer);
+    let socketProxy = require('../proxy/socket-proxy.js');
+    let appConstants = require('../app-constants.js');
 
     io.on('connection', function (socket) {
 
@@ -17,17 +16,17 @@ module.exports.setup = function (httpServer) {
             console.log('Socket client disconnected.');
         });
 
-        socket.on('message', function (message) {
+        socket.on(appConstants.SOCKET_MESSAGE, function (message) {
             console.log(message);
         })
 
-        socket.on('login', function (credentials) {
+        socket.on(appConstants.SOCKET_LOG_IN, function (credentials) {
             socketProxy.loginUser(socket, credentials.username, credentials.password);
             console.log(credentials);
         })
-        
-        socket.on('signup', function (credentials) {
-            socketProxy.loginUser(socket, credentials.username, credentials.password);
+
+        socket.on(appConstants.SOCKET_SIGN_UP, function (credentials) {
+            //socketProxy.loginUser(socket, credentials.username, credentials.password);
             console.log(credentials);
         })
     });

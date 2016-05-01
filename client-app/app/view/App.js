@@ -9,8 +9,6 @@ define(function (require) {
     return function App(parentElement) {
         // =====================================================================
         
-        AbstractView.call(this);
-
         var view = document.createElement('div');
         view.setAttribute('name', this.constructor.name);
         view.style.width = '100vw';
@@ -29,19 +27,10 @@ define(function (require) {
             children.viewStack.render();
         };
 
-        var data = null;
-        this.setData = function (newData) {
-            console.log('App.setData()');
-            data = newData;
-            children.viewStack.setChatViewData(data.chatData);
-        };
-
         this.render = function () {
             console.log('App.render()');
-            if (view.parentNode !== parentElement) {
-                parentElement.appendChild(view);
-            }
-            this.renderAll(children);
+            AbstractView.append(view, parentElement);
+            AbstractView.renderAll(children);
         };
 
         // =====================================================================

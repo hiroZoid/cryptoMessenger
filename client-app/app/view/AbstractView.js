@@ -1,42 +1,27 @@
 "use strict";
 
 define(function (require) {
+    return {
 
-    var socket = require('/socket.io/socket.io.js')();
-    var socketProxy = require('../proxy/socket-proxy.js');
+        renderAll: function (children) {
+            for (var key in children) {
+                if (children[key].render) {
+                    children[key].render();
+                }
+            }
+        },
 
-    socket.on('contactList', function (contactList) {
-        socketProxy.notifyAll('contactList', contactList);
-        console.log(contactList);
-    });
+        removeAllChildrenFrom: function (node) {
+            while (node.firstChild) {
+                node.removeChild(node.firstChild);
+            }
+        },
 
-    socket.on('invalidCredentials', function () {
-        socketProxy.notifyAll('invalidCredentials');
-        console.log('Invalid credentials!');
-    });
-
-    function renderAll(children) {
-        for (var key in children) {
-            if (children[key].render) {
-                children[key].render();
+        append: function (node, parentNode) {
+            if (node.parentNode !== parentNode) {
+                parentNode.appendChild(node);
             }
         }
-    }
 
-    function removeAllChildrenFrom(node) {
-        while (node.firstChild) {
-            node.removeChild(node.firstChild);
-        }
-    }
-
-    return function () {
-        // =====================================================================
-
-        this.renderAll = renderAll;
-        this.removeAllChildrenFrom = removeAllChildrenFrom;
-        this.socket = socket;
-        this.socketProxy = socketProxy;
-
-        // =====================================================================
     };
 });

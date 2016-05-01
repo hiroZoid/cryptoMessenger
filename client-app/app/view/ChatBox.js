@@ -9,8 +9,6 @@ define(function (require) {
 
     return function ChatBox(parentController, parentElement) {
         // =====================================================================
-        
-        AbstractView.call(this);
 
         var view = document.createElement('div');
         view.setAttribute('name', this.constructor.name);
@@ -36,9 +34,7 @@ define(function (require) {
 
         this.render = function () {
             console.log('ChatBox.render()');
-            if (view.parentNode !== parentElement) {
-                parentElement.appendChild(view);
-            }
+            AbstractView.append(view, parentElement);
             children.boxTitle.clear();
             if (data.name) {
                 var img = document.createElement('img');
@@ -52,14 +48,14 @@ define(function (require) {
                 children.boxTitle.appendChild(img);
                 children.boxTitle.appendChild(h2);
             }
-            this.renderAll(children);
+            AbstractView.renderAll(children);
         };
 
         this.chatHistoryUpdated = function () {
             console.log('ChatBox.chatHistoryUpdated()');
             children.chatHistory.render();
         };
-        
+
         // =====================================================================
     };
 });

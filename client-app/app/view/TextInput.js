@@ -6,8 +6,6 @@ define(function (require) {
 
     return function TextInput(parentController, parentElement) {
         // =====================================================================
-        
-        AbstractView.call(this);
 
         var view = document.createElement('input');
         view.setAttribute('name', this.constructor.name);
@@ -37,9 +35,7 @@ define(function (require) {
 
         this.render = function () {
             console.log('TextInput.render()');
-            if (view.parentNode !== parentElement) {
-                parentElement.appendChild(view);
-            }
+            AbstractView.append(view, parentElement);
             view.disabled = (data == null);
             if (!view.disabled) {
                 view.focus();

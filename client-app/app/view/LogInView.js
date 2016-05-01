@@ -3,11 +3,12 @@
 define(function (require) {
 
     var AbstractView = require('./AbstractView');
+    var socket = require('../socket.js');
+    var appConstants = require('/app-constants');
+    var facade = require('../facade.js');
 
     return function LogInView(parentController, parentElement) {
         // =====================================================================
-
-        AbstractView.call(this);
 
         var view = document.createElement('div');
         view.setAttribute('name', this.constructor.name);
@@ -57,26 +58,24 @@ define(function (require) {
         formDiv.appendChild(document.createElement('br'));
         formDiv.appendChild(button);
 
-        button.socket = this.socket;
         button.onclick = function () {
             if (usernameInput.value == '' || passwordInput.value == '') {
                 alert('Fill username and password!');
+            } else {
+                socket.emit(appConstants.SOCKET_LOG_IN, {
+                    username: usernameInput.value,
+                    password: passwordInput.value
+                });
             }
-            this.socket.emit('login', {
-                username: usernameInput.value,
-                password: passwordInput.value
-            });
         }
-        
-        this.socketProxy.subscribe('invalidCredentials', function () {
+
+        facade.subscribe(appConstants.SOCKET_INVALID_CREDENTIALS, function () {
             alert('Invalid credentials!');
         });
 
         this.render = function () {
             console.log('LogInView.render()');
-            if (view.parentNode !== parentElement) {
-                parentElement.appendChild(view);
-            }
+            AbstractView.append(view, parentElement);
         }
 
         this.remove = function () {

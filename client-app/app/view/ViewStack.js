@@ -6,10 +6,11 @@ define(function (require) {
     var ChatView = require('./ChatView');
     var LogInView = require('./LogInView');
 
+    var facade = require('../facade.js');
+    var appConstants = require('/app-constants');
+
     return function ViewStack(parentController, parentElement) {
         // =====================================================================
-
-        AbstractView.call(this);
 
         var view = document.createElement('div');
         view.setAttribute('name', this.constructor.name);
@@ -40,7 +41,7 @@ define(function (require) {
             }
         };
 
-        this.socketProxy.subscribe('contactList', (function (contactList) {
+        facade.subscribe(appConstants.SOCKET_SENDING_CONTACT_LIST, (function (contactList) {
             console.log(contactList);
             this.menuItemClicked('chat');
             this.render();
@@ -48,15 +49,13 @@ define(function (require) {
 
         this.render = function () {
             console.log('ViewStack.render()');
-            if (view.parentNode !== parentElement) {
-                parentElement.appendChild(view);
-            }
-            this.selectedChildren.render();
+            AbstractView.append(view, parentElement);
             for (var key in children) {
                 if (children[key] !== this.selectedChildren) {
                     children[key].remove();
                 }
             }
+            this.selectedChildren.render();
         };
 
         // =====================================================================

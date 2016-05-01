@@ -7,8 +7,6 @@ define(function (require) {
     return function ChatHistory(parentController, parentElement) {
         // =====================================================================
         
-        AbstractView.call(this);
-
         var view = document.createElement('div');
         view.setAttribute('name', this.constructor.name);
         view.style.width = '100%';
@@ -27,12 +25,8 @@ define(function (require) {
 
         this.render = function () {
             console.log('ChatHistory.render()');
-            if (view.parentNode !== parentElement) {
-                parentElement.appendChild(view);
-            }
-            while (view.firstChild) {
-                view.removeChild(view.firstChild);
-            }
+            AbstractView.append(view, parentElement);
+            AbstractView.removeAllChildrenFrom(view);
             for (var i = 0; i < data.length; i++) {
                 var p = document.createElement("p");
                 p.textContent = data[i].text;

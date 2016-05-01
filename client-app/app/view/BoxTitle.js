@@ -7,8 +7,6 @@ define(function (require) {
     return function BoxTitle(parentController, parentElement) {
         // =====================================================================
 
-        AbstractView.call(this);
-
         var view = document.createElement('div');
         view.setAttribute('name', this.constructor.name);
         view.style.width = '100%';
@@ -36,9 +34,7 @@ define(function (require) {
 
         this.render = function () {
             console.log('BoxTitle.render()');
-            if (view.parentNode !== parentElement) {
-                parentElement.appendChild(view);
-            }
+            AbstractView.append(view, parentElement);
         };
 
         // =====================================================================

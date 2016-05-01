@@ -10,8 +10,6 @@ define(function (require) {
     return function ChatView(parentController, parentElement) {
         // =====================================================================
         
-        AbstractView.call(this);
-
         var view = document.createElement('div');
         view.setAttribute('name', this.constructor.name);
         view.style.width = '100%';
@@ -57,9 +55,7 @@ define(function (require) {
         };
         
         this.remove = function () {
-            if (view.parentNode === parentElement) {
-                parentElement.removeChild(view);
-            }
+            AbstractView.append(view, parentElement);
         };
 
         // =====================================================================
