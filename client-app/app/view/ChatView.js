@@ -2,7 +2,7 @@
 
 define(function (require) {
 
-    var AbstractController = require('./AbstractController');
+    var AbstractView = require('./AbstractView');
     var BoxTitle = require('./BoxTitle');
     var ContactList = require('./ContactList');
     var ChatBox = require('./ChatBox');
@@ -10,7 +10,7 @@ define(function (require) {
     return function ChatView(parentController, parentElement) {
         // =====================================================================
         
-        AbstractController.call(this);
+        AbstractView.call(this);
 
         var view = document.createElement('div');
         view.setAttribute('name', this.constructor.name);

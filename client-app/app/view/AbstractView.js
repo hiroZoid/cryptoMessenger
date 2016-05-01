@@ -29,7 +29,7 @@ define(function (require) {
         }
     }
 
-    return function AbstractController() {
+    return function () {
         // =====================================================================
 
         this.renderAll = renderAll;

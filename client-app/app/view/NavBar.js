@@ -2,7 +2,7 @@
 
 define(function (require) {
 
-    var AbstractController = require('./AbstractController');
+    var AbstractView = require('./AbstractView');
 
     function createMenuItem(textContent, onclick) {
         var a = document.createElement('spam');
@@ -21,7 +21,7 @@ define(function (require) {
     return function NavBar(parentController, parentElement) {
         // =====================================================================
 
-        AbstractController.call(this);
+        AbstractView.call(this);
 
         var view = document.createElement('div');
         view.setAttribute('name', this.constructor.name);

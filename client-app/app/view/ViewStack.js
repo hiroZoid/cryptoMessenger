@@ -2,14 +2,14 @@
 
 define(function (require) {
 
-    var AbstractController = require('./AbstractController');
+    var AbstractView = require('./AbstractView');
     var ChatView = require('./ChatView');
     var LogInView = require('./LogInView');
 
     return function ViewStack(parentController, parentElement) {
         // =====================================================================
 
-        AbstractController.call(this);
+        AbstractView.call(this);
 
         var view = document.createElement('div');
         view.setAttribute('name', this.constructor.name);

@@ -2,12 +2,12 @@
 
 define(function (require) {
 
-    var AbstractController = require('./AbstractController');
+    var AbstractView = require('./AbstractView');
 
     return function BoxTitle(parentController, parentElement) {
         // =====================================================================
 
-        AbstractController.call(this);
+        AbstractView.call(this);
 
         var view = document.createElement('div');
         view.setAttribute('name', this.constructor.name);

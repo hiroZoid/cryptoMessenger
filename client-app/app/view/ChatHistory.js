@@ -2,12 +2,12 @@
 
 define(function (require) {
 
-    var AbstractController = require('./AbstractController');
+    var AbstractView = require('./AbstractView');
 
-    return function ContactList(parentController, parentElement) {
+    return function ChatHistory(parentController, parentElement) {
         // =====================================================================
         
-        AbstractController.call(this);
+        AbstractView.call(this);
 
         var view = document.createElement('div');
         view.setAttribute('name', this.constructor.name);
@@ -21,39 +21,28 @@ define(function (require) {
         }
 
         this.setData = function (newData) {
-            console.log('ContactList.setData()');
+            console.log('ChatHistory.setData()');
             data = newData;
         };
 
         this.render = function () {
-            console.log('ContactList.render()');
+            console.log('ChatHistory.render()');
             if (view.parentNode !== parentElement) {
                 parentElement.appendChild(view);
             }
-
-            this.removeAllChildrenFrom(view);
-
+            while (view.firstChild) {
+                view.removeChild(view.firstChild);
+            }
             for (var i = 0; i < data.length; i++) {
-                var img = document.createElement('img');
-                img.src = data[i].avatar;
-                img.className = 'avatar';
-
                 var p = document.createElement("p");
-                p.textContent = data[i].name;
-
+                p.textContent = data[i].text;
                 var div = document.createElement("div");
-                div.className = 'contact';
-                div.appendChild(img);
                 div.appendChild(p);
-                div.data = data[i];
-                div.addEventListener("click", function (e) {
-                    console.log('ContactList.onContactClicked()');
-                    parentController.setChatBoxData(e.target.data);
-                });
-
+                div.className = 'chatText ' + ((data[i].who == 'me') ? 'chatTextMe' : 'chatTextThey');
                 view.appendChild(div);
             }
-        };
+            view.scrollTop = view.scrollHeight;
+        }
 
         // =====================================================================
     };
