@@ -3,16 +3,16 @@
 module.exports.setup = function (httpServer) {
 
     let io = require('socket.io').listen(httpServer);
-    let socketProxy = require('../proxy/socket-proxy.js');
+    let socketBusiness = require('../business/socket-business.js');
     let appConstants = require('../app-constants.js');
 
     io.on('connection', function (socket) {
 
-        socketProxy.userConnected(socket);
+        socketBusiness.userConnected(socket);
         console.log('Socket client connected');
-
+        
         socket.on('disconnect', function () {
-            socketProxy.userDisconnected(socket);
+            socketBusiness.userDisconnected(socket);
             console.log('Socket client disconnected.');
         });
 
@@ -21,13 +21,13 @@ module.exports.setup = function (httpServer) {
         })
 
         socket.on(appConstants.SOCKET_LOG_IN, function (credentials) {
-            socketProxy.loginUser(socket, credentials.username, credentials.password);
+            socketBusiness.loginUser(socket, credentials.username, credentials.password);
             console.log(credentials);
         })
 
-        socket.on(appConstants.SOCKET_SIGN_UP, function (credentials) {
-            //socketProxy.loginUser(socket, credentials.username, credentials.password);
-            console.log(credentials);
+        socket.on(appConstants.SOCKET_REGISTER_USER, function (userData) {
+            socketBusiness.registerUser(socket, userData.nickname, userData.username, userData.password);
+            console.log(userData);
         })
     });
 
