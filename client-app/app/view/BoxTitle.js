@@ -29,7 +29,7 @@ define(function (require) {
         };
 
         this.clear = function () {
-            this.removeAllChildrenFrom(view);
+            AbstractView.removeAllChildrenFrom(view);
         };
 
         this.render = function () {

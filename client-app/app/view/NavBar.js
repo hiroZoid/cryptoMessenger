@@ -3,6 +3,8 @@
 define(function (require) {
 
     var AbstractView = require('./AbstractView');
+    var appConstants = require('/app-constants');
+    var facade = require('../facade.js');
 
     function createMenuItem(textContent, onclick) {
         var a = document.createElement('spam');
@@ -44,20 +46,21 @@ define(function (require) {
         menu.style.cssFloat = 'right';
         view.appendChild(menu);
 
-        var logIn = createMenuItem('Log In', function () {
-            parentController.menuItemClicked('logIn');
-        });
-        menu.appendChild(logIn);
+        menu.appendChild(createMenuItem('Register', function () {
+            facade.sendNotification(appConstants.NAVBAR_ITEM_CLICKED, 'RegisterView');
+        }));
 
-        var chat = createMenuItem('Chat', function () {
-            parentController.menuItemClicked('chat');
-        });
-        menu.appendChild(chat);
+        menu.appendChild(createMenuItem('Log In', function () {
+            facade.sendNotification(appConstants.NAVBAR_ITEM_CLICKED, 'LogInView');
+        }));
 
-        var logOut = createMenuItem('Log Out', function () {
-            parentController.menuItemClicked('logOut');
-        });
-        menu.appendChild(logOut);
+        menu.appendChild(createMenuItem('Chat', function () {
+            facade.sendNotification(appConstants.NAVBAR_ITEM_CLICKED, 'ChatView');
+        }));
+
+        menu.appendChild(createMenuItem('Log Out', function () {
+            facade.sendNotification(appConstants.NAVBAR_ITEM_CLICKED, 'LogOut');
+        }));
 
         this.getStyleHeight = function () {
             console.log('NavBar.getStyleHeight()');

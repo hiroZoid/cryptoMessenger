@@ -51,11 +51,13 @@ define(function (require) {
             if (view.parentNode !== parentElement) {
                 parentElement.appendChild(view);
             }
-            this.renderAll(children);
+            AbstractView.renderAll(children);
         };
         
         this.remove = function () {
-            AbstractView.append(view, parentElement);
+            if (view.parentNode == parentElement) {
+                parentElement.removeChild(view);
+            }
         };
 
         // =====================================================================

@@ -24,6 +24,17 @@ define(function (require) {
         formDiv.style.textAlign = 'center';
         view.appendChild(formDiv);
 
+        var nicknameLabel = document.createElement('label');
+        nicknameLabel.textContent = 'Nickname: ';
+
+        var nicknameInput = document.createElement('input');
+        nicknameInput.type = 'text';
+        nicknameInput.required = '';
+
+        var nicknameP = document.createElement('p');
+        nicknameP.appendChild(nicknameLabel);
+        nicknameP.appendChild(nicknameInput);
+
         var usernameLabel = document.createElement('label');
         usernameLabel.textContent = 'Username: ';
 
@@ -52,6 +63,8 @@ define(function (require) {
         button.className = 'myButton';
 
         formDiv.appendChild(document.createElement('br'));
+        formDiv.appendChild(nicknameP);
+        formDiv.appendChild(document.createElement('br'));
         formDiv.appendChild(usernameP);
         formDiv.appendChild(document.createElement('br'));
         formDiv.appendChild(passwordP);
@@ -62,15 +75,16 @@ define(function (require) {
             if (usernameInput.value == '' || passwordInput.value == '') {
                 alert('Fill username and password!');
             } else {
-                socket.emit(appConstants.SOCKET_LOG_IN, {
+                socket.emit(appConstants.SOCKET_REGISTER_USER, {
+                    nickname: nicknameInput.value,
                     username: usernameInput.value,
                     password: passwordInput.value
                 });
             }
         }
 
-        facade.subscribe(appConstants.SOCKET_INVALID_CREDENTIALS, function () {
-            alert('Invalid credentials!');
+        facade.subscribe(appConstants.SOCKET_USER_REGISTERED, function () {
+            alert('User sucessfully created!\nNow you can login with your user.');
         });
 
         this.render = function () {

@@ -5,6 +5,7 @@ define(function (require) {
     var AbstractView = require('./AbstractView');
     var ChatView = require('./ChatView');
     var LogInView = require('./LogInView');
+    var RegisterView = require('./RegisterView');
 
     var facade = require('../facade.js');
     var appConstants = require('/app-constants');
@@ -22,28 +23,32 @@ define(function (require) {
         };
 
         var children = {
+            registerView: new RegisterView(this, view),
             logInView: new LogInView(this, view),
             chatView: new ChatView(this, view)
         };
 
         this.selectedChildren = children.logInView;
 
-        this.menuItemClicked = function (clickedItem) {
-            switch (clickedItem) {
-                case 'logIn':
+        facade.subscribe(appConstants.NAVBAR_ITEM_CLICKED, (function (className) {
+            switch (className) {
+                case 'RegisterView':
+                    this.selectedChildren = children.registerView;
+                    break;
+                case 'LogInView':
                     this.selectedChildren = children.logInView;
                     break;
-                case 'logOut':
-                    break;
-                case 'chat':
+                case 'ChatView':
                     this.selectedChildren = children.chatView;
                     break;
-            }
-        };
+                case 'LogOut':
+                    break;
+            };
+            this.render();
+        }).bind(this));
 
         facade.subscribe(appConstants.SOCKET_SENDING_CONTACT_LIST, (function (contactList) {
             console.log(contactList);
-            this.menuItemClicked('chat');
             this.render();
         }).bind(this));
 
@@ -51,9 +56,7 @@ define(function (require) {
             console.log('ViewStack.render()');
             AbstractView.append(view, parentElement);
             for (var key in children) {
-                if (children[key] !== this.selectedChildren) {
-                    children[key].remove();
-                }
+                children[key].remove();
             }
             this.selectedChildren.render();
         };
