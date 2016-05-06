@@ -19,6 +19,22 @@ define(function (require) {
         console.log(appConstants.SOCKET_USER_REGISTERED);
     });
 
+    socket.on(appConstants.SOCKET_USER_LOGGED, function (user) {
+        facade.sendNotification(appConstants.SOCKET_USER_LOGGED, user);
+        console.log(appConstants.SOCKET_USER_REGISTERED);
+    });
+
+    socket.on(appConstants.SOCKET_DATABASE_ERROR, function (errMsg) {
+        facade.sendNotification(appConstants.SOCKET_DATABASE_ERROR, errMsg);
+        alert('Database error:\n' + errMsg);
+        console.log(appConstants.SOCKET_DATABASE_ERROR, errMsg);
+    });
+
+    socket.on(appConstants.SOCKET_SEND_PLAINTEXT_PROFILE, function (profile) {
+        facade.sendNotification(appConstants.SOCKET_SEND_PLAINTEXT_PROFILE, profile);
+        console.log(appConstants.SOCKET_SEND_PLAINTEXT_PROFILE, profile);
+    });
+
 
     console.log('socket.js executed!');
 

@@ -1,5 +1,6 @@
 "use strict";
 define(function (require) {
+    require('./appProxy.js');
     var App = require('./view/App');
     var app = new App(document.body);
     app.render();

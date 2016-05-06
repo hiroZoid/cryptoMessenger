@@ -6,6 +6,8 @@ define(function (require) {
     var BoxTitle = require('./BoxTitle');
     var ContactList = require('./ContactList');
     var ChatBox = require('./ChatBox');
+    
+    var socket = require('../socket.js');
 
     return function ChatView(parentController, parentElement) {
         // =====================================================================
@@ -48,9 +50,7 @@ define(function (require) {
 
         this.render = function () {
             console.log('ChatView.render()');
-            if (view.parentNode !== parentElement) {
-                parentElement.appendChild(view);
-            }
+            AbstractView.append(view, parentElement);
             AbstractView.renderAll(children);
         };
         

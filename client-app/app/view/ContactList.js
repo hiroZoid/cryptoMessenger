@@ -3,6 +3,10 @@
 define(function (require) {
 
     var AbstractView = require('./AbstractView');
+    var appConstants = require('/app-constants');
+    
+    var facade = require('../facade.js');
+    var socket = require('../socket.js');
 
     return function ContactList(parentController, parentElement) {
         // =====================================================================
@@ -34,7 +38,7 @@ define(function (require) {
                 img.className = 'avatar';
 
                 var p = document.createElement("p");
-                p.textContent = data[i].name;
+                p.textContent = data[i].nickname;
 
                 var div = document.createElement("div");
                 div.className = 'contact';
@@ -43,13 +47,21 @@ define(function (require) {
                 div.data = data[i];
                 div.addEventListener("click", function (e) {
                     console.log('ContactList.onContactClicked()');
-                    parentController.setChatBoxData(e.target.data);
+                    facade.sendNotification(appConstants.CONTACT_CLICKED, this.data._id);
                 });
 
                 view.appendChild(div);
             }
         };
 
+        facade.subscribe(appConstants.SOCKET_USER_LOGGED, (function () {
+            socket.emit(appConstants.SOCKET_RETRIEVE_CONTACT_LIST);
+        }).bind(this));
+        
+        facade.subscribe(appConstants.SOCKET_SENDING_CONTACT_LIST, (function (contactList) {
+            this.setData(contactList);
+        }).bind(this));
+        
         // =====================================================================
     };
 });

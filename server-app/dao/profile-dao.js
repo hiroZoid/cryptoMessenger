@@ -9,3 +9,14 @@ var profileSchema = new mongoose.Schema({
 }, { timestamps: true });
 
 var profileModel = mongoose.model('profile', profileSchema);
+
+module.exports = {
+
+    retrievePlaintextProfile: function () {
+        return profileModel.findOne({
+            name: 'plaintext',
+            ownerUser: undefined
+        }).exec();
+    },
+
+}

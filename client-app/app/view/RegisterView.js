@@ -87,6 +87,10 @@ define(function (require) {
             alert('User sucessfully created!\nNow you can login with your user.');
         });
 
+        facade.subscribe(appConstants.SOCKET_USERNAME_EXISTS, function () {
+            alert('Username already exists!\nChoose another.');
+        });
+
         this.render = function () {
             console.log('LogInView.render()');
             AbstractView.append(view, parentElement);

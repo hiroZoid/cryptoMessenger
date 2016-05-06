@@ -47,11 +47,6 @@ define(function (require) {
             this.render();
         }).bind(this));
 
-        facade.subscribe(appConstants.SOCKET_SENDING_CONTACT_LIST, (function (contactList) {
-            console.log(contactList);
-            this.render();
-        }).bind(this));
-
         this.render = function () {
             console.log('ViewStack.render()');
             AbstractView.append(view, parentElement);

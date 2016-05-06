@@ -3,6 +3,11 @@
 define(function (require) {
 
     var AbstractView = require('./AbstractView');
+    
+    var facade = require('../facade.js');
+    var socket = require('../socket.js');
+    var appProxy = require('../appProxy.js');
+    var appConstants = require('/app-constants');
 
     return function ChatHistory(parentController, parentElement) {
         // =====================================================================
@@ -37,7 +42,11 @@ define(function (require) {
             }
             view.scrollTop = view.scrollHeight;
         }
-
+        
+        facade.subscribe(appConstants.CONTACT_CLICKED, (function (userId) {
+            console.log(appConstants.CONTACT_CLICKED, userId);
+        }).bind(this));
+   
         // =====================================================================
     };
 });
