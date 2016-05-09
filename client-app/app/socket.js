@@ -4,39 +4,66 @@ define(function (require) {
     var appConstants = require('/app-constants');
     var facade = require('./facade.js');
 
-    socket.on(appConstants.SOCKET_SENDING_CONTACT_LIST, function (contactList) {
-        facade.sendNotification(appConstants.SOCKET_SENDING_CONTACT_LIST, contactList);
-        console.log(appConstants.SOCKET_SENDING_CONTACT_LIST);
-    });
+    // Listen to facade notifications
 
-    socket.on(appConstants.SOCKET_INVALID_CREDENTIALS, function () {
-        facade.sendNotification(appConstants.SOCKET_INVALID_CREDENTIALS);
-        console.log(appConstants.SOCKET_INVALID_CREDENTIALS);
+    facade.subscribe(appConstants.C2S_LOG_IN_USER, function (credentials) {
+        socket.emit(appConstants.C2S_LOG_IN_USER, credentials);
     });
-
-    socket.on(appConstants.SOCKET_USER_REGISTERED, function () {
-        facade.sendNotification(appConstants.SOCKET_USER_REGISTERED);
-        console.log(appConstants.SOCKET_USER_REGISTERED);
+    
+    facade.subscribe(appConstants.C2S_REGISTER_USER, function (newUser) {
+        socket.emit(appConstants.C2S_REGISTER_USER, newUser);
     });
+    
 
-    socket.on(appConstants.SOCKET_USER_LOGGED, function (user) {
-        facade.sendNotification(appConstants.SOCKET_USER_LOGGED, user);
-        console.log(appConstants.SOCKET_USER_REGISTERED);
-    });
+    // Listen to server messages and notificate them throught facade
 
-    socket.on(appConstants.SOCKET_DATABASE_ERROR, function (errMsg) {
-        facade.sendNotification(appConstants.SOCKET_DATABASE_ERROR, errMsg);
+    socket.on(appConstants.S2C_DATABASE_ERROR, function (errMsg) {
+        facade.sendNotification(appConstants.S2C_DATABASE_ERROR, errMsg);
         alert('Database error:\n' + errMsg);
-        console.log(appConstants.SOCKET_DATABASE_ERROR, errMsg);
+        console.log(appConstants.S2C_DATABASE_ERROR);
     });
 
-    socket.on(appConstants.SOCKET_SEND_PLAINTEXT_PROFILE, function (profile) {
-        facade.sendNotification(appConstants.SOCKET_SEND_PLAINTEXT_PROFILE, profile);
-        console.log(appConstants.SOCKET_SEND_PLAINTEXT_PROFILE, profile);
+    socket.on(appConstants.S2C_USER_REGISTERED, function () {
+        facade.sendNotification(appConstants.S2C_USER_REGISTERED);
+        console.log(appConstants.S2C_USER_REGISTERED);
     });
 
+    socket.on(appConstants.S2C_USERNAME_EXISTS, function () {
+        facade.sendNotification(appConstants.S2C_USERNAME_EXISTS);
+        console.log(appConstants.S2C_USERNAME_EXISTS);
+    });
 
-    console.log('socket.js executed!');
+    socket.on(appConstants.S2C_USER_LOGGED_IN, function (user) {
+        facade.sendNotification(appConstants.S2C_USER_LOGGED_IN, user);
+        console.log(appConstants.S2C_USER_REGISTERED);
+    });
+
+    socket.on(appConstants.S2C_INVALID_CREDENTIALS, function () {
+        facade.sendNotification(appConstants.S2C_INVALID_CREDENTIALS);
+        console.log(appConstants.S2C_INVALID_CREDENTIALS);
+    });
+
+    socket.on(appConstants.S2C_SEND_PLAINTEXT_PROFILE, function (profile) {
+        facade.sendNotification(appConstants.S2C_SEND_PLAINTEXT_PROFILE, profile);
+        console.log(appConstants.S2C_SEND_PLAINTEXT_PROFILE);
+    });
+
+    socket.on(appConstants.S2C_SEND_CONTACT_LIST, function (contactList) {
+        facade.sendNotification(appConstants.S2C_SEND_CONTACT_LIST, contactList);
+        console.log(appConstants.S2C_SEND_CONTACT_LIST);
+    });
+
+    socket.on(appConstants.S2C_SEND_CHAT_HISTORY, function (history) {
+        facade.sendNotification(appConstants.S2C_SEND_CHAT_HISTORY, history);
+        console.log(appConstants.S2C_SEND_CHAT_HISTORY);
+    });
+
+    socket.on(appConstants.S2C_CHAT_MESSAGE, function (msg) {
+        facade.sendNotification(appConstants.S2C_CHAT_MESSAGE, msg);
+        console.log(appConstants.S2C_CHAT_MESSAGE);
+    });
+
+    console.log('socket.js required');
 
     return socket;
 });

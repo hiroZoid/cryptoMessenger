@@ -5,13 +5,9 @@ define(function (require) {
     var AbstractView = require('./AbstractView');
 
     var facade = require('../facade.js');
-    var socket = require('../socket.js');
     var appProxy = require('../appProxy.js');
     var appConstants = require('/app-constants');
     
-    var recipientUserId = null;
-    var plaintextProfileId = null;
-
     return function TextInput(parentController, parentElement) {
         // =====================================================================
 
@@ -25,7 +21,7 @@ define(function (require) {
         view.addEventListener('keydown', (function (e) {
             console.log('TextInput.view.onKeyDown()');
             if (e.keyCode == 13 && e.target.value.length > 0) {
-                socket.emit(appConstants.SOCKET_CHAT_MESSAGE, {
+                socket.emit(appConstants.C2S_CHAT_MESSAGE, {
                     profile: plaintextProfileId,
                     sender: appProxy.getCurrentUser()._id,
                     recipient: recipientUserId,
@@ -53,16 +49,6 @@ define(function (require) {
                 view.focus();
             }
         };
-        
-        facade.subscribe(appConstants.CONTACT_CLICKED, function (userId) {
-            recipientUserId = userId;
-        });
-        
-        facade.subscribe(appConstants.SOCKET_SEND_PLAINTEXT_PROFILE, function (profile) {
-            plaintextProfileId = profile._id;
-        });
-        
-        socket.emit(appConstants.SOCKET_RETRIEVE_PLAINTEXT_PROFILE);
         
         // =====================================================================
     };

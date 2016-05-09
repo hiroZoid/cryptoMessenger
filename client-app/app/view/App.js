@@ -22,11 +22,6 @@ define(function (require) {
 
         children.viewStack.subtractFromHeight(children.navBar.getStyleHeight());
         
-        this.menuItemClicked = function (clickedItem) {
-            children.viewStack.menuItemClicked(clickedItem);
-            children.viewStack.render();
-        };
-
         this.render = function () {
             console.log('App.render()');
             AbstractView.append(view, parentElement);

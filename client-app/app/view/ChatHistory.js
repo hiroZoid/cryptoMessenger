@@ -5,7 +5,6 @@ define(function (require) {
     var AbstractView = require('./AbstractView');
     
     var facade = require('../facade.js');
-    var socket = require('../socket.js');
     var appProxy = require('../appProxy.js');
     var appConstants = require('/app-constants');
 
@@ -34,19 +33,17 @@ define(function (require) {
             AbstractView.removeAllChildrenFrom(view);
             for (var i = 0; i < data.length; i++) {
                 var p = document.createElement("p");
-                p.textContent = data[i].text;
+                p.textContent = data[i].message;
                 var div = document.createElement("div");
                 div.appendChild(p);
-                div.className = 'chatText ' + ((data[i].who == 'me') ? 'chatTextMe' : 'chatTextThey');
+                div.className = 'chatText ' + ((data[i].sender == appProxy.getCurrentUserId()) ? 'chatTextMe' : 'chatTextThey');
+                console.log('(data[i].sender = ' + data[i].sender);
+                console.log('appProxy.getCurrentUser() = ' + appProxy.getCurrentUserId());
                 view.appendChild(div);
             }
             view.scrollTop = view.scrollHeight;
         }
         
-        facade.subscribe(appConstants.CONTACT_CLICKED, (function (userId) {
-            console.log(appConstants.CONTACT_CLICKED, userId);
-        }).bind(this));
-   
         // =====================================================================
     };
 });

@@ -6,7 +6,6 @@ define(function (require) {
     var appConstants = require('/app-constants');
     
     var facade = require('../facade.js');
-    var socket = require('../socket.js');
 
     return function ContactList(parentController, parentElement) {
         // =====================================================================
@@ -16,15 +15,15 @@ define(function (require) {
         view.style.width = '100%';
         view.style.overflow = 'auto';
 
-        var data = [];
+        var contacts = [];
 
         this.setStyleHeight = function (height) {
             view.style.height = height;
         }
 
-        this.setData = function (newData) {
+        this.setData = function (contactList) {
             console.log('ContactList.setData()');
-            data = newData;
+            contacts = contactList;
         };
 
         this.render = function () {
@@ -32,33 +31,30 @@ define(function (require) {
             AbstractView.append(view, parentElement);
             AbstractView.removeAllChildrenFrom(view);
 
-            for (var i = 0; i < data.length; i++) {
+            for (var i = 0; i < contacts.length; i++) {
                 var img = document.createElement('img');
-                img.src = data[i].avatar;
+                img.src = contacts[i].avatar;
                 img.className = 'avatar';
 
                 var p = document.createElement("p");
-                p.textContent = data[i].nickname;
+                p.textContent = contacts[i].nickname;
 
                 var div = document.createElement("div");
                 div.className = 'contact';
                 div.appendChild(img);
                 div.appendChild(p);
-                div.data = data[i];
-                div.addEventListener("click", function (e) {
+                
+                div.contact = contacts[i];
+                div.addEventListener("click", function () {
                     console.log('ContactList.onContactClicked()');
-                    facade.sendNotification(appConstants.CONTACT_CLICKED, this.data._id);
+                    facade.sendNotification(appConstants.SELECT_CONTACT, this.contact);
                 });
 
                 view.appendChild(div);
             }
         };
 
-        facade.subscribe(appConstants.SOCKET_USER_LOGGED, (function () {
-            socket.emit(appConstants.SOCKET_RETRIEVE_CONTACT_LIST);
-        }).bind(this));
-        
-        facade.subscribe(appConstants.SOCKET_SENDING_CONTACT_LIST, (function (contactList) {
+        facade.subscribe(appConstants.S2C_SEND_CONTACT_LIST, (function (contactList) {
             this.setData(contactList);
         }).bind(this));
         

@@ -3,7 +3,6 @@
 define(function (require) {
 
     var AbstractView = require('./AbstractView');
-    var socket = require('../socket.js');
     var appConstants = require('/app-constants');
     var facade = require('../facade.js');
 
@@ -62,14 +61,14 @@ define(function (require) {
             if (usernameInput.value == '' || passwordInput.value == '') {
                 alert('Fill username and password!');
             } else {
-                socket.emit(appConstants.SOCKET_LOG_IN, {
+                facade.sendNotification(appConstants.C2S_LOG_IN_USER, {
                     username: usernameInput.value,
                     password: passwordInput.value
                 });
             }
         }
 
-        facade.subscribe(appConstants.SOCKET_INVALID_CREDENTIALS, function () {
+        facade.subscribe(appConstants.S2C_INVALID_CREDENTIALS, function () {
             alert('Invalid credentials!');
         });
 

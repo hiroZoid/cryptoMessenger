@@ -12,11 +12,37 @@ module.exports.setup = function (httpServer) {
         console.log('Socket client connected');
 
         socket.on('disconnect', function () {
-            socketBusiness.userDisconnected(socket);
+            socketBusiness.socketDisconnected(socket);
             console.log('Socket client disconnected.');
         });
 
-        socket.on(appConstants.SOCKET_CHAT_MESSAGE, function (msg) {
+        socket.on(appConstants.C2S_REGISTER_USER, function (userData) {
+            socketBusiness.registerUser(socket, userData.nickname, userData.username, userData.password);
+            console.log(userData);
+        });
+
+        socket.on(appConstants.C2S_LOG_IN_USER, function (credentials) {
+            socketBusiness.loginUser(socket, credentials.username, credentials.password);
+            console.log(credentials);
+        })
+
+        socket.on(appConstants.C2S_LOG_OUT_USER, function () {
+            socketBusiness.logoutUser(socket);
+        });
+
+        socket.on(appConstants.C2S_GET_CONTACT_LIST, function () {
+            socketBusiness.sendContactList(socket);
+        });
+
+        socket.on(appConstants.C2S_GET_PLAINTEXT_PROFILE, function () {
+            socketBusiness.sendPlaintextProfile(socket);
+        });
+
+        socket.on(appConstants.C2S_GET_CHAT_HISTORY, function () {
+            socketBusiness.sendFullHistory(socket);
+        });
+
+        socket.on(appConstants.C2S_CHAT_MESSAGE, function (msg) {
             console.log(msg);
             socketBusiness.handleChatMessageReceived(
                 socket,
@@ -26,28 +52,6 @@ module.exports.setup = function (httpServer) {
                 msg.message
             );
         })
-
-        socket.on(appConstants.SOCKET_LOG_IN, function (credentials) {
-            socketBusiness.loginUser(socket, credentials.username, credentials.password);
-            console.log(credentials);
-        })
-
-        socket.on(appConstants.SOCKET_REGISTER_USER, function (userData) {
-            socketBusiness.registerUser(socket, userData.nickname, userData.username, userData.password);
-            console.log(userData);
-        });
-
-        socket.on(appConstants.SOCKET_RETRIEVE_CONTACT_LIST, function () {
-            socketBusiness.sendContactList(socket);
-        });
-
-        socket.on(appConstants.SOCKET_RETRIEVE_PLAINTEXT_PROFILE, function () {
-            socketBusiness.sendPlaintextProfile(socket);
-        });
-
-        socket.on(appConstants.SOCKET_USER_LOGGED_OUT, function () {
-            socketBusiness.logoutUser(socket);
-        });
 
     });
 

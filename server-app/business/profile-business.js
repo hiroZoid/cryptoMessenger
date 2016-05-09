@@ -10,7 +10,7 @@ profileDao.retrievePlaintextProfile()
         console.log('Plaintext profile retrieved.');
     })
     .catch(function (err) {
-        console.log('Could not retrieve plaintext profile!');
+        console.log('ERROR: Could not retrieve plaintext profile!');
         process.kill(process.pid, 'SIGINT');
     });
 

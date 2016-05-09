@@ -6,86 +6,104 @@ var appConstants = require('../app-constants.js');
 var profileBusiness = require('./profile-business.js');
 
 // hashmap to sockets by socket.id
-var sockets = {};
+var socketsById = {};
 
 // hashmap to sockets by user._id
-var users = {};
+var socketsByUserId = {};
+
+var emitDataBaseError = function (socket, msg, err) {
+    socket.emit(appConstants.S2C_DATABASE_ERROR, msg + '\n\n' + err);
+};
 
 module.exports = {
 
     socketConnected: function (socket) {
-        sockets[socket.id] = {};
-        console.log(sockets);
+        socketsById[socket.id] = {};
+        console.log(socketsById);
     },
 
     socketDisconnected: function (socket) {
-        if (sockets[socket.id].user !== undefined) {
-            delete users[sockets[socket.id].user._id];
+        if (socketsById[socket.id].user !== undefined) {
+            delete socketsByUserId[socketsById[socket.id].user._id];
         }
-        delete sockets[socket.id];
-        console.log(sockets);
+        delete socketsById[socket.id];
+        console.log(socketsById);
     },
 
     isSocketLogged: function (socket) {
-        return sockets[socket.id] !== undefided;
+        return socketsById[socket.id] !== undefided;
     },
 
     loginUser: function (socket, username, password) {
         userDao.retrieve(username, password)
             .then(function (user) {
                 if (user == null) {
-                    socket.emit(appConstants.SOCKET_INVALID_CREDENTIALS, null);
+                    socket.emit(appConstants.S2C_INVALID_CREDENTIALS, null);
                 } else {
                     console.log('user retrieved', user);
-                    sockets[socket.id].user = user;
-                    users[user._id] = socket;
-                    socket.emit(appConstants.SOCKET_USER_LOGGED, user);
+                    socketsById[socket.id].user = user;
+                    socketsByUserId[user._id] = socket;
+                    socket.emit(appConstants.S2C_USER_LOGGED_IN, user);
                 }
             })
-            .catch(function (err) {
-                socket.emit(appConstants.SOCKET_DATABASE_ERROR, 'Could not retrieve user.');
-            });
+            .catch(emitDataBaseError.bind(null, socket, 'Could not retrieve user.'));
     },
 
     logoutUser: function (socket) {
-        delete sockets[socket.id].user;
-        delete users[user._id];
+        delete socketsByUserId[socketsById[socket.id].user._id];
+        delete socketsById[socket.id].user;
     },
 
     registerUser: function (socket, nickname, username, password) {
         userDao.persist(nickname, username, password)
             .then(function (user) {
-                sleep(1000);
+                // sleep(1000);
                 if (user == null) {
-                    socket.emit(appConstants.SOCKET_USERNAME_EXISTS, null);
+                    socket.emit(appConstants.S2C_USERNAME_EXISTS, null);
                 } else {
-                    socket.emit(appConstants.SOCKET_USER_REGISTERED, user);
+                    socket.emit(appConstants.S2C_USER_REGISTERED, user);
                 }
             })
-            .catch(function (err) {
-                socket.emit(appConstants.SOCKET_DATABASE_ERROR, 'Could not register user.');
-            });
+            .catch(emitDataBaseError.bind(null, socket, 'Could not register user.'));
     },
 
     sendContactList: function (socket) {
         userDao.retrieveAll().then(function (contactList) {
-            socket.emit(appConstants.SOCKET_SENDING_CONTACT_LIST, contactList);
+            socket.emit(appConstants.S2C_SEND_CONTACT_LIST, contactList);
             console.log('contactList retrieved');
         });
     },
 
     sendPlaintextProfile: function (socket) {
-        socket.emit(appConstants.SOCKET_SEND_PLAINTEXT_PROFILE, profileBusiness.getPlaintextProfile());
+        socket.emit(appConstants.S2C_SEND_PLAINTEXT_PROFILE, profileBusiness.getPlaintextProfile());
+    },
+
+    sendFullHistory: function (sender, recipient) {
+        messageDao.getFullHistory(sender, recipient)
+            .then(function (history) {
+                socket.emit(appConstants.S2C_SEND_CHAT_HISTORY, history);
+            })
+            .catch(emitDataBaseError.bind(null, socket, 'Could not get chat history.'));
     },
 
     handleChatMessageReceived: function (socket, profile, sender, recipient, message) {
         messageDao.persist(profile, sender, recipient, message)
-            .then(function (chatMsg) {
-                console.log(chatMsg);
+            .then(function (chatMessage) {
+                // Send back the message to sender
+                socket.emit(
+                    appConstants.S2C_CHAT_MESSAGE,
+                    chatMessage
+                );
+                // Send the message to recipient if logged
+                if (socketsByUserId[chatMessage.recipient] !== undefined) {
+                    socketsByUserId[chatMessage.recipient].emit(
+                        appConstants.S2C_CHAT_MESSAGE,
+                        chatMessage
+                    );
+                }
+                console.log(chatMessage);
             })
-            .catch(function (err) {
-                socket.emit(appConstants.SOCKET_DATABASE_ERROR, 'Could not deliver message.\n' + err);
-            });
+            .catch(emitDataBaseError.bind(null, socket, 'Could not deliver message.'));
     },
 
 

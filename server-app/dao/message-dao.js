@@ -20,4 +20,11 @@ module.exports = {
             message: message
         }).save();
     },
+
+    getFullHistory: function (sender, recipient) {
+        return messageModel.find({
+            sender: sender,
+            recipient: recipient
+        }).exec();
+    }
 };

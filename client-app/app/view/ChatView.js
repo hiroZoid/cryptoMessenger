@@ -7,8 +7,6 @@ define(function (require) {
     var ContactList = require('./ContactList');
     var ChatBox = require('./ChatBox');
     
-    var socket = require('../socket.js');
-
     return function ChatView(parentController, parentElement) {
         // =====================================================================
         
@@ -36,12 +34,6 @@ define(function (require) {
             console.log('ChatView.setData()');
             data = newData;
             children.contactList.setData(data);
-        };
-
-        this.setChatBoxData = function (newData) {
-            console.log('ChatView.setChatBoxData()');
-            children.chatBox.setData(newData);
-            children.chatBox.render();
         };
 
         this.setParentElement = function (newParentElement) {

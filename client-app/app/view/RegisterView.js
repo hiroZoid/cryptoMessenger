@@ -3,7 +3,6 @@
 define(function (require) {
 
     var AbstractView = require('./AbstractView');
-    var socket = require('../socket.js');
     var appConstants = require('/app-constants');
     var facade = require('../facade.js');
 
@@ -75,7 +74,7 @@ define(function (require) {
             if (usernameInput.value == '' || passwordInput.value == '') {
                 alert('Fill username and password!');
             } else {
-                socket.emit(appConstants.SOCKET_REGISTER_USER, {
+                facade.sendNotification(appConstants.C2S_REGISTER_USER, {
                     nickname: nicknameInput.value,
                     username: usernameInput.value,
                     password: passwordInput.value
@@ -83,11 +82,11 @@ define(function (require) {
             }
         }
 
-        facade.subscribe(appConstants.SOCKET_USER_REGISTERED, function () {
+        facade.subscribe(appConstants.S2C_USER_REGISTERED, function () {
             alert('User sucessfully created!\nNow you can login with your user.');
         });
 
-        facade.subscribe(appConstants.SOCKET_USERNAME_EXISTS, function () {
+        facade.subscribe(appConstants.S2C_USERNAME_EXISTS, function () {
             alert('Username already exists!\nChoose another.');
         });
 
