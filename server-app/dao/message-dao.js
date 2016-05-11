@@ -21,10 +21,12 @@ module.exports = {
         }).save();
     },
 
-    getFullHistory: function (sender, recipient) {
+    getFullHistory: function (userId1, userId2) {
         return messageModel.find({
-            sender: sender,
-            recipient: recipient
+            $or: [
+                { sender: userId1, recipient: userId2 },
+                { sender: userId2, recipient: userId1 }
+            ]
         }).exec();
     }
 };

@@ -5,46 +5,37 @@ define(function (require) {
     var facade = require('./facade.js');
 
     var currentUser = null;
-    var recipientUser = null;
     var plaintextProfile = null;
 
     facade.subscribe(appConstants.S2C_USER_LOGGED_IN, function (user) {
         currentUser = user;
+        facade.sendNotification(appConstants.C2S_GET_PLAINTEXT_PROFILE);
+    });
+
+    facade.subscribe(appConstants.S2C_SEND_PLAINTEXT_PROFILE, function (profile) {
+        plaintextProfile = profile;
+        facade.sendNotification(appConstants.C2S_GET_CONTACT_LIST);
     });
 
     facade.subscribe(appConstants.C2S_LOG_OUT_USER, function () {
         currentUser = null;
     });
 
-    facade.subscribe(appConstants.SELECT_CONTACT, function (user) {
-        //socket.emit(appConstants.C2S_GET_CONTACT_LIST);
-        recipientUser = user;
-    });
-
-    facade.subscribe(appConstants.S2C_SEND_PLAINTEXT_PROFILE, function (profile) {
-        plaintextProfile = profile;
-    });
-
     console.log('appProxy.js required');
 
     return {
-        getCurrentUser: (function () {
+        getCurrentUser: function () {
             return currentUser;
-        }).bind(this),
+        },
 
-        getCurrentUserId: (function () {
+        getCurrentUserId: function () {
             return currentUser._id;
-        }).bind(this),
+        },
 
-        getRecipientUserId: (function () {
-            return recipientUser._id;
-        }).bind(this),
-        
-        getPlainTextProfileId: (function () {
+        getPlainTextProfileId: function () {
             return plaintextProfile._id;
-        }).bind(this),
-        
-        
+        },
+
     };
 
 });

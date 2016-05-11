@@ -68,10 +68,6 @@ define(function (require) {
             }
         }
 
-        facade.subscribe(appConstants.S2C_INVALID_CREDENTIALS, function () {
-            alert('Invalid credentials!');
-        });
-
         this.render = function () {
             console.log('LogInView.render()');
             AbstractView.append(view, parentElement);
@@ -82,6 +78,10 @@ define(function (require) {
                 parentElement.removeChild(view);
             }
         };
+
+        facade.subscribe(appConstants.S2C_INVALID_CREDENTIALS, function () {
+            alert('Invalid credentials!');
+        });
 
         // =====================================================================
     };

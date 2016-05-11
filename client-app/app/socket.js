@@ -6,14 +6,36 @@ define(function (require) {
 
     // Listen to facade notifications
 
-    facade.subscribe(appConstants.C2S_LOG_IN_USER, function (credentials) {
-        socket.emit(appConstants.C2S_LOG_IN_USER, credentials);
-    });
-    
     facade.subscribe(appConstants.C2S_REGISTER_USER, function (newUser) {
         socket.emit(appConstants.C2S_REGISTER_USER, newUser);
     });
-    
+
+    facade.subscribe(appConstants.C2S_LOG_IN_USER, function (credentials) {
+        socket.emit(appConstants.C2S_LOG_IN_USER, credentials);
+    });
+
+    facade.subscribe(appConstants.C2S_LOG_OUT_USER, function () {
+        socket.emit(appConstants.C2S_LOG_OUT_USER);
+    });
+
+    facade.subscribe(appConstants.C2S_GET_PLAINTEXT_PROFILE, function () {
+        socket.emit(appConstants.C2S_GET_PLAINTEXT_PROFILE);
+    });
+
+    facade.subscribe(appConstants.C2S_GET_CONTACT_LIST, function () {
+        socket.emit(appConstants.C2S_GET_CONTACT_LIST);
+    });
+
+    facade.subscribe(appConstants.C2S_GET_CHAT_HISTORY, function (recipientUserId) {
+        socket.emit(appConstants.C2S_GET_CHAT_HISTORY, recipientUserId);
+    });
+
+    facade.subscribe(appConstants.C2S_CHAT_MESSAGE, function (msg) {
+        socket.emit(appConstants.C2S_CHAT_MESSAGE, msg);
+    });
+
+
+
 
     // Listen to server messages and notificate them throught facade
 
@@ -53,8 +75,8 @@ define(function (require) {
         console.log(appConstants.S2C_SEND_CONTACT_LIST);
     });
 
-    socket.on(appConstants.S2C_SEND_CHAT_HISTORY, function (history) {
-        facade.sendNotification(appConstants.S2C_SEND_CHAT_HISTORY, history);
+    socket.on(appConstants.S2C_SEND_CHAT_HISTORY, function (contactHistory) {
+        facade.sendNotification(appConstants.S2C_SEND_CHAT_HISTORY, contactHistory);
         console.log(appConstants.S2C_SEND_CHAT_HISTORY);
     });
 

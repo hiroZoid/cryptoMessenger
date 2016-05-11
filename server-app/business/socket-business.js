@@ -68,20 +68,25 @@ module.exports = {
     },
 
     sendContactList: function (socket) {
-        userDao.retrieveAll().then(function (contactList) {
-            socket.emit(appConstants.S2C_SEND_CONTACT_LIST, contactList);
-            console.log('contactList retrieved');
-        });
+        userDao.retrieveAllExcept(socketsById[socket.id].user._id)
+            .then(function (contactList) {
+                socket.emit(appConstants.S2C_SEND_CONTACT_LIST, contactList);
+                console.log('contactList retrieved');
+            })
+            .catch(emitDataBaseError.bind(null, socket, 'Could not get contact list.'));
     },
 
     sendPlaintextProfile: function (socket) {
         socket.emit(appConstants.S2C_SEND_PLAINTEXT_PROFILE, profileBusiness.getPlaintextProfile());
     },
 
-    sendFullHistory: function (sender, recipient) {
-        messageDao.getFullHistory(sender, recipient)
+    sendFullHistory: function (socket, contactUserId) {
+        messageDao.getFullHistory(socketsById[socket.id].user._id, contactUserId)
             .then(function (history) {
-                socket.emit(appConstants.S2C_SEND_CHAT_HISTORY, history);
+                socket.emit(appConstants.S2C_SEND_CHAT_HISTORY, {
+                    contactUserId: contactUserId,
+                    history: history
+                });
             })
             .catch(emitDataBaseError.bind(null, socket, 'Could not get chat history.'));
     },

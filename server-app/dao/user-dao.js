@@ -23,6 +23,10 @@ module.exports = {
         return userModel.find({}).select('_id nickname').exec();
     },
 
+    retrieveAllExcept: function (userId) {
+        return userModel.find({ _id: { $ne: userId } }).select('_id nickname').exec();
+    },
+
     persist: function (nickname, username, password) {
         return new userModel({
             nickname: nickname,

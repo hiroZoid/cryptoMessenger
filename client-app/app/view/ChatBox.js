@@ -7,6 +7,10 @@ define(function (require) {
     var ChatHistory = require('./ChatHistory');
     var TextInput = require('./TextInput');
 
+    var facade = require('../facade.js');
+    var chatProxy = require('../chatProxy.js');
+    var appConstants = require('/app-constants');
+
     return function ChatBox(parentController, parentElement) {
         // =====================================================================
 
@@ -24,37 +28,35 @@ define(function (require) {
             'calc(100% - ' + children.boxTitle.getStyleHeight() + ' - ' + children.textInput.getStyleHeight() + ')'
         );
 
-        var data = [];
-        this.setData = function (newData) {
-            console.log('ChatBox.setData()', newData);
-            data = newData;
-            children.chatHistory.setData(data.chatHistory);
-            children.textInput.setData(data);
-        };
-
         this.render = function () {
             console.log('ChatBox.render()');
+            this.updateBoxTitle();
             AbstractView.append(view, parentElement);
+            AbstractView.renderAll(children);
+        };
+
+        this.updateBoxTitle = function () {
             children.boxTitle.clear();
-            if (data.name) {
+
+            if (chatProxy.getRecipientUser() !== null) {
                 var img = document.createElement('img');
-                img.src = data.avatar;
+                img.src = chatProxy.getRecipientUser().avatar;
                 img.className = 'avatar';
 
                 var h2 = document.createElement('h2');
-                h2.textContent = data.name;
+                h2.textContent = chatProxy.getRecipientUser().nickname;
                 h2.style.float = 'right';
 
                 children.boxTitle.appendChild(img);
                 children.boxTitle.appendChild(h2);
             }
-            AbstractView.renderAll(children);
         };
 
-        this.chatHistoryUpdated = function () {
-            console.log('ChatBox.chatHistoryUpdated()');
-            children.chatHistory.render();
-        };
+        facade.subscribe(appConstants.SELECT_CONTACT, (function () {
+            if (view.parentNode === parentElement) {
+                this.updateBoxTitle();
+            }
+        }).bind(this));
 
         // =====================================================================
     };

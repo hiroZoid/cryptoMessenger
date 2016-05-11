@@ -4,6 +4,7 @@ module.exports = {
     // Client side facade messages
     NAVBAR_ITEM_CLICKED: 'NAVBAR_ITEM_CLICKED',
     SELECT_CONTACT: 'SELECT_CONTACT',
+    CONTACT_LIST_RECEIVED: 'CONTACT_LIST_RECEIVED',
     CHAT_HISTORY_UPDATED: 'CHAT_HISTORY_UPDATED',
     
     // C2S: Client to server socket messages

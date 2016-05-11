@@ -38,8 +38,8 @@ module.exports.setup = function (httpServer) {
             socketBusiness.sendPlaintextProfile(socket);
         });
 
-        socket.on(appConstants.C2S_GET_CHAT_HISTORY, function () {
-            socketBusiness.sendFullHistory(socket);
+        socket.on(appConstants.C2S_GET_CHAT_HISTORY, function (contactUserId) {
+            socketBusiness.sendFullHistory(socket, contactUserId);
         });
 
         socket.on(appConstants.C2S_CHAT_MESSAGE, function (msg) {
