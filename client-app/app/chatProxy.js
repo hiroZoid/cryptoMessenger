@@ -4,14 +4,29 @@ define(function (require) {
     var appConstants = require('/app-constants');
     var facade = require('./facade.js');
     var appProxy = require('./appProxy.js');
-
+    /*
+        chatData = {
+            contactUser1._id: {
+                contact: contactUser1,
+                history: [message1, message2, ...]
+            }
+            contactUser2._id: ...
+        }
+    */
     var chatData = {};
+    /*
+        contactList = [contactUser1, contactUser2, ...]
+    */
     var contactList = null;
     var recipientUser = null;
 
     facade.subscribe(appConstants.SELECT_CONTACT, function (contactUser) {
         recipientUser = contactUser;
-        facade.sendNotification(appConstants.C2S_GET_CHAT_HISTORY, recipientUser._id);
+        if (chatData[contactUser._id].history === undefined) {
+            facade.sendNotification(appConstants.C2S_GET_CHAT_HISTORY, contactUser._id);
+        } else {
+            facade.sendNotification(appConstants.CHAT_HISTORY_UPDATED, contactUser._id);
+        }
     });
 
     facade.subscribe(appConstants.S2C_SEND_CONTACT_LIST, function (contacts) {
@@ -25,9 +40,11 @@ define(function (require) {
 
     facade.subscribe(appConstants.S2C_CHAT_MESSAGE, function (msg) {
         var contactUserId = (msg.sender == appProxy.getCurrentUserId() ? msg.recipient : msg.sender);
+        /*
         if (chatData[contactUserId].history === undefined) {
             chatData[contactUserId].history = [];
         }
+        */
         chatData[contactUserId].history.push(msg);
         facade.sendNotification(appConstants.CHAT_HISTORY_UPDATED, contactUserId);
     });
