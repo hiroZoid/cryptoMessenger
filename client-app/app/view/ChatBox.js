@@ -9,6 +9,7 @@ define(function (require) {
 
     var facade = require('../facade.js');
     var chatProxy = require('../chatProxy.js');
+    var appProxy = require('../appProxy.js');
     var appConstants = require('/app-constants');
 
     return function ChatBox(parentController, parentElement) {
@@ -40,8 +41,11 @@ define(function (require) {
 
             if (chatProxy.getRecipientUser() !== null) {
                 var img = document.createElement('img');
-                img.src = chatProxy.getRecipientUser().avatar;
                 img.className = 'avatar';
+                img.src = chatProxy.getRecipientUser().avatar;
+                img.onerror = function () {
+                    this.src = appProxy.getDefaultAvatarUrl();
+                };
 
                 var h2 = document.createElement('h2');
                 h2.textContent = chatProxy.getRecipientUser().nickname;

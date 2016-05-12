@@ -1,4 +1,4 @@
-"use str4ict";
+"use strict";
 define(function (require) {
     require('./socket.js');
     require('./chatProxy.js');

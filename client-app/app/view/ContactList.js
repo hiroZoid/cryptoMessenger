@@ -7,6 +7,7 @@ define(function (require) {
 
     var facade = require('../facade.js');
     var chatProxy = require('../chatProxy.js');
+    var appProxy = require('../appProxy.js');
 
     return function ContactList(parentController, parentElement) {
         // =====================================================================
@@ -28,8 +29,11 @@ define(function (require) {
             chatProxy.getContactList().forEach(function (contact) {
                 
                 var img = document.createElement('img');
-                img.src = contact.avatar;
                 img.className = 'avatar';
+                img.src = contact.avatar;
+                img.onerror = function () {
+                    this.src = appProxy.getDefaultAvatarUrl();
+                };
 
                 var p = document.createElement("p");
                 p.textContent = contact.nickname;

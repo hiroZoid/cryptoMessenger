@@ -35,6 +35,10 @@ define(function (require) {
         getPlainTextProfileId: function () {
             return plaintextProfile._id;
         },
+        
+        getDefaultAvatarUrl: function() {
+            return './img/stormtrooper.jpeg';
+        }
 
     };
 
