@@ -1,9 +1,10 @@
 "use strict";
 define(function (require) {
 
-    var appConstants = require('/app-constants');
-    var facade = require('./facade.js');
-    var appProxy = require('./appProxy.js');
+    var appConstants = require('/app-constants.js');
+    var facade = require('/app/core/facade.js');
+    var appProxy = require('/app/core/app-proxy.js');
+    
     /*
         chatData = {
             contactUser1._id: {
@@ -55,7 +56,7 @@ define(function (require) {
         console.log(contactHistory.history);
     });
 
-    console.log('chatProxy.js required');
+    console.log('chat-proxy.js required');
 
     return {
 

@@ -1,8 +1,8 @@
 "use strict";
 define(function (require) {
 
-    var appConstants = require('/app-constants');
-    var facade = require('./facade.js');
+    var appConstants = require('/app-constants.js');
+    var facade = require('/app/core/facade.js');
 
     var currentUser = null;
     var plaintextProfile = null;
@@ -21,7 +21,7 @@ define(function (require) {
         currentUser = null;
     });
 
-    console.log('appProxy.js required');
+    console.log('app-proxy.js required');
 
     return {
         getCurrentUser: function () {

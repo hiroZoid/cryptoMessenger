@@ -12,7 +12,7 @@ module.exports = function (app) {
         response.sendFile(serverPath + '/client-app/index.html');
     });
 
-    app.get('/app-constants', function (request, response) {
+    app.get('/app-constants.js', function (request, response) {
         response.end(
             '"use strict";\n' +
             'define(function () {\n' +

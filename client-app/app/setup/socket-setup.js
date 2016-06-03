@@ -1,8 +1,9 @@
 "use strict";
 define(function (require) {
+    
     var socket = require('/socket.io/socket.io.js')();
-    var appConstants = require('/app-constants');
-    var facade = require('./facade.js');
+    var appConstants = require('/app-constants.js');
+    var facade = require('/app/core/facade.js');
 
     // Listen to facade notifications
 
@@ -85,7 +86,6 @@ define(function (require) {
         console.log(appConstants.S2C_CHAT_MESSAGE);
     });
 
-    console.log('socket.js required');
+    console.log('socket-setup.js required');
 
-    return socket;
 });
