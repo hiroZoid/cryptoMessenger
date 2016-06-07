@@ -3,7 +3,7 @@
 define(function (require) {
 
     var ConversationView = require('text!/app/view/1.2.3.2-conversation-view.html!strip');
-    
+
     var AbstractCtrl = require('./abstract-ctrl.js');
     var HistoryCtrl = require('./1.2.3.2.1-history-ctrl.js');
     var TypeTextCtrl = require('./1.2.3.2.2-type-text-ctrl.js');
@@ -23,13 +23,13 @@ define(function (require) {
         avatar.onerror = function () {
             this.src = appProxy.getDefaultAvatarUrl();
         };
-        
+
         this.children = {
             chatHistory: new HistoryCtrl(this.getDescendant('cm-history')),
             textInput: new TypeTextCtrl(this.getDescendant('cm-type-text'))
         };
 
-        facade.subscribe(appConstants.CHAT_HISTORY_UPDATED, (function () {
+        facade.subscribe(appConstants.CHAT_HISTORY_UPDATED, function () {
             if (chatProxy.getRecipientUser() !== null) {
                 avatar.src = chatProxy.getRecipientUser().avatar;
                 recipientName.textContent = chatProxy.getRecipientUser().nickname;
@@ -37,7 +37,16 @@ define(function (require) {
                 avatar.src = appProxy.getDefaultAvatarUrl();
                 recipientName.textContent = '';
             }
-        }).bind(this));
+        });
+
+        function setDefault() {
+            avatar.src = appProxy.getDefaultAvatarUrl();
+            recipientName.textContent = '';
+        }
+
+        facade.subscribe(appConstants.C2S_LOG_OUT_USER, setDefault);
+
+        setDefault();
 
         // =====================================================================
     };

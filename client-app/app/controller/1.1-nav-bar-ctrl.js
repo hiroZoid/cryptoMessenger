@@ -45,7 +45,8 @@ define(function (require) {
         };
 
         logOutTab.onclick = function () {
-            facade.sendNotification(appConstants.NAVBAR_ITEM_CLICKED, appConstants.LOG_OUT_TAB);
+            facade.sendNotification(appConstants.C2S_LOG_OUT_USER);
+            setNotLoggedState();
         };
 
         setNotLoggedState();

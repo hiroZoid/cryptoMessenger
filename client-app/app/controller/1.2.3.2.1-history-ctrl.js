@@ -43,9 +43,17 @@ define(function (require) {
             this.showView();
         }
 
-        facade.subscribe(appConstants.CHAT_HISTORY_UPDATED, (function () {
-            this.render();
+        facade.subscribe(appConstants.CHAT_HISTORY_UPDATED, (function (recipientUserId) {
+            if (recipientUserId !== undefined
+                && chatProxy.getRecipientUser() !== null
+                && chatProxy.getRecipientUserId() === recipientUserId) {
+                this.render();
+            }
         }).bind(this));
+
+        facade.subscribe(appConstants.C2S_LOG_OUT_USER, function () {
+            this.removeAllChildrenFrom(this.getDescendant('cm-content'));
+        }.bind(this));
 
         // =====================================================================
     };

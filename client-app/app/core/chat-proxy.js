@@ -4,7 +4,7 @@ define(function (require) {
     var appConstants = require('/app-constants.js');
     var facade = require('/app/core/facade.js');
     var appProxy = require('/app/core/app-proxy.js');
-    
+
     /*
         chatData = {
             contactUser1._id: {
@@ -40,7 +40,7 @@ define(function (require) {
     });
 
     facade.subscribe(appConstants.S2C_CHAT_MESSAGE, function (msg) {
-        var contactUserId = (msg.sender == appProxy.getCurrentUserId() ? msg.recipient : msg.sender);
+        var contactUserId = (msg.sender._id == appProxy.getCurrentUserId() ? msg.recipient : msg.sender);
         /*
         if (chatData[contactUserId].history === undefined) {
             chatData[contactUserId].history = [];
@@ -56,6 +56,12 @@ define(function (require) {
         console.log(contactHistory.history);
     });
 
+    facade.subscribe(appConstants.C2S_LOG_OUT_USER, function () {
+        chatData = {};
+        contactList = null;
+        recipientUser = null;
+    });
+
     console.log('chat-proxy.js required');
 
     return {
@@ -69,7 +75,7 @@ define(function (require) {
         },
 
         getRecipientUserId: function () {
-            return recipientUser;
+            return recipientUser._id;
         },
 
         getHistoryForRecipientUser: function () {

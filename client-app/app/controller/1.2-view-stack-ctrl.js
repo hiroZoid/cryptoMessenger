@@ -52,6 +52,11 @@ define(function (require) {
             this.render();
         }.bind(this));
 
+        facade.subscribe(appConstants.C2S_LOG_OUT_USER, function () {
+            this.selectedChildCtrl = this.children.logInCtrl;
+            this.render();
+        }.bind(this));
+
         // =====================================================================
     };
 });

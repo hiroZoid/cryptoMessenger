@@ -21,7 +21,6 @@ define(function (require) {
             this.removeAllChildrenFrom(this.getDescendant('cm-contacts'));
 
             if (chatProxy.getContactList() !== null) {
-                console.log(chatProxy.getContactList());
                 chatProxy.getContactList().forEach((function (contact) {
 
                     var contactDiv = this.createView(ContactView);
@@ -47,11 +46,15 @@ define(function (require) {
             this.showView();
         };
 
-        facade.subscribe(appConstants.CONTACT_LIST_RECEIVED, (function () {
+        facade.subscribe(appConstants.CONTACT_LIST_RECEIVED, function () {
             if (this.view.parentNode === this.parentElement) {
                 this.render();
             }
-        }).bind(this));
+        }.bind(this));
+
+        facade.subscribe(appConstants.C2S_LOG_OUT_USER, function () {
+            this.removeAllChildrenFrom(this.getDescendant('cm-contacts'));
+        }.bind(this));
 
         // =====================================================================
     };
