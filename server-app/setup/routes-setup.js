@@ -22,7 +22,7 @@ module.exports = function (app) {
     });
 
     app.get('*', function (request, response) {
-        response.end('It Works!! Path Hit: ' + request.url);
+        response.end('This is nowhere. Path Hit: ' + request.url);
     });
 
     console.log('routes-setup.js executed.');

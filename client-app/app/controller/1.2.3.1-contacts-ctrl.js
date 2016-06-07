@@ -21,6 +21,7 @@ define(function (require) {
             this.removeAllChildrenFrom(this.getDescendant('cm-contacts'));
 
             if (chatProxy.getContactList() !== null) {
+                console.log(chatProxy.getContactList());
                 chatProxy.getContactList().forEach((function (contact) {
 
                     var contactDiv = this.createView(ContactView);

@@ -19,10 +19,6 @@ define(function (require) {
         socket.emit(appConstants.C2S_LOG_OUT_USER);
     });
 
-    facade.subscribe(appConstants.C2S_GET_PLAINTEXT_PROFILE, function () {
-        socket.emit(appConstants.C2S_GET_PLAINTEXT_PROFILE);
-    });
-
     facade.subscribe(appConstants.C2S_GET_CONTACT_LIST, function () {
         socket.emit(appConstants.C2S_GET_CONTACT_LIST);
     });
@@ -64,11 +60,6 @@ define(function (require) {
     socket.on(appConstants.S2C_INVALID_CREDENTIALS, function () {
         facade.sendNotification(appConstants.S2C_INVALID_CREDENTIALS);
         console.log(appConstants.S2C_INVALID_CREDENTIALS);
-    });
-
-    socket.on(appConstants.S2C_SEND_PLAINTEXT_PROFILE, function (profile) {
-        facade.sendNotification(appConstants.S2C_SEND_PLAINTEXT_PROFILE, profile);
-        console.log(appConstants.S2C_SEND_PLAINTEXT_PROFILE);
     });
 
     socket.on(appConstants.S2C_SEND_CONTACT_LIST, function (contactList) {

@@ -16,7 +16,6 @@ define(function (require) {
             navBar: new NavBarCtrl(this.getDescendant('cm-nav-bar')),
             viewStack: new ViewStackCtrl(this.getDescendant('cm-view-stack'))
         };
-        //this.children.viewStack.subtractFromHeight(this.children.navBar.getStyleHeight());
 
         // =====================================================================
     };

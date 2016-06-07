@@ -34,10 +34,6 @@ module.exports.setup = function (httpServer) {
             socketBusiness.sendContactList(socket);
         });
 
-        socket.on(appConstants.C2S_GET_PLAINTEXT_PROFILE, function () {
-            socketBusiness.sendPlaintextProfile(socket);
-        });
-
         socket.on(appConstants.C2S_GET_CHAT_HISTORY, function (contactUserId) {
             socketBusiness.sendFullHistory(socket, contactUserId);
         });
@@ -46,7 +42,6 @@ module.exports.setup = function (httpServer) {
             console.log(msg);
             socketBusiness.handleChatMessageReceived(
                 socket,
-                msg.profile,
                 msg.sender,
                 msg.recipient,
                 msg.message

@@ -19,7 +19,6 @@ define(function (require) {
         this.getDescendant('cm-type-text').addEventListener('keydown', function (e) {
             if (e.keyCode == 13 && e.target.value.length > 0) {
                 facade.sendNotification(appConstants.C2S_CHAT_MESSAGE, {
-                    profile: appProxy.getPlainTextProfileId(),
                     sender: appProxy.getCurrentUserId(),
                     recipient: chatProxy.getRecipientUserId(),
                     message: e.target.value

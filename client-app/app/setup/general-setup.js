@@ -4,10 +4,6 @@ define(function (require) {
     var appConstants = require('/app-constants.js');
     var facade = require('/app/core/facade.js');
 
-    document.body.onresize = function () {
-        console.log(arguments);
-    }
-
     Element.prototype.hasClassName = function (name) {
         return new RegExp("(?:^|\\s+)" + name + "(?:\\s+|$)").test(this.className);
     };

@@ -3,7 +3,6 @@
 var userDao = require('../dao/user-dao.js');
 var messageDao = require('../dao/message-dao.js');
 var appConstants = require('../app-constants.js');
-var profileBusiness = require('./profile-business.js');
 
 // hashmap to sockets by socket.id
 var socketsById = {};
@@ -76,10 +75,6 @@ module.exports = {
             .catch(emitDataBaseError.bind(null, socket, 'Could not get contact list.'));
     },
 
-    sendPlaintextProfile: function (socket) {
-        socket.emit(appConstants.S2C_SEND_PLAINTEXT_PROFILE, profileBusiness.getPlaintextProfile());
-    },
-
     sendFullHistory: function (socket, contactUserId) {
         messageDao.getFullHistory(socketsById[socket.id].user._id, contactUserId)
             .then(function (history) {
@@ -91,8 +86,8 @@ module.exports = {
             .catch(emitDataBaseError.bind(null, socket, 'Could not get chat history.'));
     },
 
-    handleChatMessageReceived: function (socket, profile, sender, recipient, message) {
-        messageDao.persist(profile, sender, recipient, message)
+    handleChatMessageReceived: function (socket, sender, recipient, message) {
+        messageDao.persist(sender, recipient, message)
             .then(function (chatMessage) {
                 // Send back the message to sender
                 socket.emit(
