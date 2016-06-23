@@ -26,7 +26,14 @@ module.exports = {
         return userModel.findOne({
             username: username,
             password: password
-        }).select('_id nickname').exec();
+        }).select('_id username nickname avatar').exec();
+    },
+
+    update: function (userId, objectUpdate) {
+        return userModel.findOneAndUpdate(
+            { _id: userId },
+            objectUpdate
+        ).exec();
     },
 
     retrieveAll: function () {
@@ -36,8 +43,8 @@ module.exports = {
     retrieveAllExcept: function (userId) {
         return userModel.find({ _id: { $ne: userId } }).select('_id nickname avatar').exec();
     },
-    
+
     findByNickName: function (nickname) {
-        
+
     },
 }

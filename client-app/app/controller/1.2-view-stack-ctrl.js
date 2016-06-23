@@ -8,6 +8,7 @@ define(function (require) {
     var RegisterCtrl = require('./1.2.1-register-ctrl.js');
     var LogInCtrl = require('./1.2.2-log-in-ctrl.js');
     var ChatCtrl = require('./1.2.3-chat-ctrl.js');
+    var EditProfileCtrl = require('./1.2.5-edit-profile-ctrl.js');
 
     var facade = require('/app/core/facade.js');
     var appConstants = require('/app-constants.js');
@@ -20,7 +21,8 @@ define(function (require) {
         this.children = {
             registerCtrl: new RegisterCtrl(this.getDescendant('cm-content')),
             logInCtrl: new LogInCtrl(this.getDescendant('cm-content')),
-            chatCtrl: new ChatCtrl(this.getDescendant('cm-content'))
+            chatCtrl: new ChatCtrl(this.getDescendant('cm-content')),
+            editProfileCtrl: new EditProfileCtrl(this.getDescendant('cm-content'))
         };
 
         facade.subscribe(appConstants.NAVBAR_ITEM_CLICKED, (function (clickedTab) {
@@ -31,6 +33,8 @@ define(function (require) {
                     this.selectedChildCtrl = this.children.logInCtrl; break;
                 case appConstants.CHAT_TAB:
                     this.selectedChildCtrl = this.children.chatCtrl; break;
+                case appConstants.EDIT_PROFILE_TAB:
+                    this.selectedChildCtrl = this.children.editProfileCtrl; break;
             };
             this.render();
         }).bind(this));

@@ -40,6 +40,10 @@ define(function (require) {
             encryptAndEmit(appConstants.C2S_REGISTER_USER, newUser);
         });
 
+        facade.subscribe(appConstants.C2S_UPDATE_USER, function (currentUser) {
+            encryptAndEmit(appConstants.C2S_UPDATE_USER, currentUser);
+        });
+
         facade.subscribe(appConstants.C2S_LOG_IN_USER, function (credentials) {
             encryptAndEmit(appConstants.C2S_LOG_IN_USER, credentials);
         });
@@ -106,6 +110,14 @@ define(function (require) {
         
         socket.on(appConstants.S2C_AVATAR_UPLOADED, function () {
             decryptAndSendNotification(appConstants.S2C_AVATAR_UPLOADED);
+        });
+
+        socket.on(appConstants.S2C_AVATAR_UPDATED, function () {
+            decryptAndSendNotification(appConstants.S2C_AVATAR_UPDATED);
+        });
+
+        socket.on(appConstants.S2C_USER_UPDATED, function () {
+            decryptAndSendNotification(appConstants.S2C_USER_UPDATED);
         });
 
         console.log('socket-setup.js required');

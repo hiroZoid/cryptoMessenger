@@ -2,7 +2,7 @@
 
 define(function (require) {
 
-    var RegisterView = require('text!/app/view/1.2.1-register-view.html!strip');
+    var EditProfileView = require('text!/app/view/1.2.5-edit-profile-view.html!strip');
     var UploadAvatar = require('text!/app/view/upload-avatar.html!strip');
 
     var AbstractCtrl = require('./abstract-ctrl.js');
@@ -10,27 +10,31 @@ define(function (require) {
     var facade = require('/app/core/facade.js');
     var appProxy = require('/app/core/app-proxy.js');
 
-    return function RegisterCtrl(parentElement) {
+    return function EditProfileCtrl(parentElement) {
         // =====================================================================
 
-        AbstractCtrl.apply(this, [parentElement, RegisterView]);
+        AbstractCtrl.apply(this, [parentElement, EditProfileView]);
 
         var nicknameInput = this.getDescendant('cm-nickname');
-        var usernameInput = this.getDescendant('cm-username');
         var passwordInput = this.getDescendant('cm-password');
         var retypeInput = this.getDescendant('cm-retype');
         var avatarInput = this.getDescendant('cm-avatar');
+        var currentPasswordInput = this.getDescendant('cm-current-password');
 
 
         this.getDescendant('cm-form').onsubmit = (function () {
 
-            if (nicknameInput.value == ''
-                || usernameInput.value == ''
-                || passwordInput.value == ''
-                || retypeInput.value == '') {
-                alert('Fill all fields!');
+            if (currentPasswordInput.value == '') {
+                alert('Fill current password to change your profile!');
             } else if (passwordInput.value != retypeInput.value) {
-                alert("Passwords don't match!");
+                    alert("New passwords don't match!");
+            } else if (
+                nicknameInput.value == '' &&
+                passwordInput.value == '' &&
+                retypeInput.value == '' &&
+                avatarInput.value == ''
+            ) {
+                alert("Fill some field to change your profile!");
             } else if (avatarInput.files.length == 1) {
                 var iframe = document.createElement('iframe');
                 iframe.style.display = 'none';
@@ -43,42 +47,45 @@ define(function (require) {
                     socketIdInput.setAttribute('name', 'socketId');
                     socketIdInput.setAttribute('type', 'text');
                     socketIdInput.setAttribute('value', appProxy.getSocketId());
+                    var editProfileInput = document.createElement('input');
+                    editProfileInput.setAttribute('name', 'editProfile');
+                    editProfileInput.setAttribute('type', 'text');
+                    editProfileInput.setAttribute('value', 'editProfile');
+                    form.appendChild(editProfileInput);
                     form.appendChild(socketIdInput);
                     form.appendChild(avatarInputClone);
                     form.submit();
                 }
             } else {
-                sendRegisterUserNotification();
+                sendUpdateUserNotification();
             }
             return false;
         }).bind(this);
 
-        function sendRegisterUserNotification() {
-            facade.sendNotification(appConstants.C2S_REGISTER_USER, {
+        function sendUpdateUserNotification() {
+            facade.sendNotification(appConstants.C2S_UPDATE_USER, {
                 nickname: nicknameInput.value,
-                username: usernameInput.value,
                 password: passwordInput.value,
-                avatar: avatarInput.value
+                avatar: avatarInput.value,
+                currentPassword: currentPasswordInput.value,
             });
+
         }
 
-        facade.subscribe(appConstants.S2C_AVATAR_UPLOADED, function () {
-            sendRegisterUserNotification();
+        facade.subscribe(appConstants.S2C_AVATAR_UPDATED, function () {
+            sendUpdateUserNotification();
         });
 
-        facade.subscribe(appConstants.S2C_USER_REGISTERED, function () {
+        facade.subscribe(appConstants.S2C_USER_UPDATED, function () {
             nicknameInput.value = '';
-            usernameInput.value = '';
             passwordInput.value = '';
             retypeInput.value = '';
             avatarInput.value = '';
+            currentPasswordInput.value = '';
             alert('User sucessfully created!\nNow you can login with your user.');
-        });
-
-        facade.subscribe(appConstants.S2C_USERNAME_EXISTS, function () {
-            alert('Username already exists!\nChoose another.');
         });
 
         // =====================================================================
     };
 });
+

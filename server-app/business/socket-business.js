@@ -85,6 +85,51 @@ module.exports = {
             .catch(emitDataBaseError.bind(null, socket, 'Could not register user.'));
     },
 
+    updateUser: function (socket, nickname, password, avatar, currentPassword) {
+        var filename = null;
+        var username = socketsById[socket.id].user.username;
+        console.log('credentials:', username, currentPassword);
+        userDao.retrieve(username, currentPassword)
+            .then(function (user) {
+                if (user == null) {
+                    encryptAndEmit(socket, appConstants.S2C_INVALID_CREDENTIALS, null);
+                } else {
+                    console.log('Credentials are valid');
+
+                    if (avatar.length > 0) {
+                        filename = socket.id.substring(2) + avatar.substring(avatar.lastIndexOf('.'));
+                    }
+
+                    var updateObject = { $set: {} };
+                    if (nickname && nickname !== '') {
+                        updateObject['$set'].nickname = nickname;
+                    }
+                    if (password && password !== '') {
+                        updateObject['$set'].password = password;
+                    }
+                    if (filename !== null) {
+                        updateObject['$set'].avatar = filename;
+                    }
+
+                    console.log('updateObject', updateObject);
+
+                    userDao.update(user._id, updateObject)
+                        .then(function (user) {
+                            console.log(user);
+                            // sleep(1000);
+                            // if (user == null) {
+                            //     encryptAndEmit(socket, appConstants.S2C_USERNAME_EXISTS, null);
+                            // } else {
+                            //     encryptAndEmit(socket, appConstants.S2C_USER_REGISTERED, user);
+                            // }
+                        })
+                        .catch(emitDataBaseError.bind(null, socket, 'Could not register user.'));
+                }
+            })
+            .catch(emitDataBaseError.bind(null, socket, 'Could not retrieve user.'));
+
+    },
+
     sendContactList: function (socket) {
         userDao.retrieveAllExcept(socketsById[socket.id].user._id)
             .then(function (contactList) {
@@ -143,8 +188,12 @@ module.exports = {
         return socketsById[socket.id].aesKey;
     },
 
-    notifyAvatarUploaded: function (socketId) {
-        encryptAndEmit(socketsById['/#' + socketId].socket, appConstants.S2C_AVATAR_UPLOADED);
+    notifyAvatarUploaded: function (socketId, editProfile) {
+        if (editProfile) {
+            encryptAndEmit(socketsById['/#' + socketId].socket, appConstants.S2C_AVATAR_UPDATED);
+        } else {
+            encryptAndEmit(socketsById['/#' + socketId].socket, appConstants.S2C_AVATAR_UPLOADED);
+        }
     }
 
 };

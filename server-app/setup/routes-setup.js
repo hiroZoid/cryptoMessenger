@@ -31,10 +31,13 @@ module.exports = function (app) {
 
     app.route('/upload-avatar').post(function (request, response, next) {
         var socketId = null;
+        var editProfile = false;
         request.pipe(request.busboy);
         request.busboy.on('field', function (fieldname, value) {
             if (fieldname === 'socketId') {
                 socketId = value;
+            } else if (fieldname === 'editProfile') {
+                editProfile = true;
             }
             console.log(fieldname, value);
         });
@@ -51,7 +54,7 @@ module.exports = function (app) {
             var fstream = fs.createWriteStream(serverPath + '/client-app/img/' + filenameToSave);
             file.pipe(fstream);
             fstream.on('close', function () {
-                socketBusiness.notifyAvatarUploaded(socketId);
+                socketBusiness.notifyAvatarUploaded(socketId, editProfile);
                 console.log("Upload Finished of " + filename);
             });
         });
