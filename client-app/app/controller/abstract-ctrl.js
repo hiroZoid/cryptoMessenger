@@ -7,7 +7,6 @@ define(function (require) {
 
     function createView(htmlString) {
         var div = document.createElement('div');
-        div.className = 'stretch';
         div.innerHTML = htmlString;
         return div.firstChild;
     }

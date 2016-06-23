@@ -27,7 +27,7 @@ define(function (require) {
                     var contactAvatar = contactDiv.getElementsByClassName('cm-avatar')[0];
                     var contactName = contactDiv.getElementsByClassName('cm-contact-name')[0];
 
-                    contactAvatar.src = contact.avatar;
+                    contactAvatar.src = '/img/' + contact.avatar;
                     contactAvatar.onerror = function () {
                         this.src = appProxy.getDefaultAvatarUrl();
                     };

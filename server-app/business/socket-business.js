@@ -31,6 +31,7 @@ module.exports = {
 
     socketConnected: function (socket) {
         socketsById[socket.id] = {};
+        socketsById[socket.id].socket = socket;
         console.log(socketsById);
     },
 
@@ -66,8 +67,13 @@ module.exports = {
         delete socketsById[socket.id].user;
     },
 
-    registerUser: function (socket, nickname, username, password) {
-        userDao.persist(nickname, username, password)
+    registerUser: function (socket, nickname, username, password, avatar) {
+        var filename = null;
+        if (avatar.length > 0) {
+            filename = socket.id.substring(2) + avatar.substring(avatar.lastIndexOf('.'));
+        }
+
+        userDao.persist(nickname, username, password, filename)
             .then(function (user) {
                 // sleep(1000);
                 if (user == null) {
@@ -135,6 +141,10 @@ module.exports = {
 
     getAesKey: function (socket) {
         return socketsById[socket.id].aesKey;
+    },
+
+    notifyAvatarUploaded: function (socketId) {
+        encryptAndEmit(socketsById['/#' + socketId].socket, appConstants.S2C_AVATAR_UPLOADED);
     }
 
 };

@@ -25,6 +25,7 @@ define(function (require) {
                     password: passwordInput.value
                 });
             }
+            return false;
         }
 
         facade.subscribe(appConstants.S2C_INVALID_CREDENTIALS, function () {

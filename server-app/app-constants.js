@@ -10,7 +10,7 @@ module.exports = {
     REGISTER_TAB: 'REGISTER_TAB',
     LOG_IN_TAB: 'LOG_IN_TAB',
     CHAT_TAB: 'CHAT_TAB',
-    
+
     // C2S: Client to server socket messages
     C2S_REGISTER_USER: 'C2S_REGISTER_USER',
     C2S_LOG_IN_USER: 'C2S_LOG_IN_USER',
@@ -30,4 +30,6 @@ module.exports = {
     S2C_SEND_CHAT_HISTORY: 'S2C_SEND_CHAT_HISTORY',
     S2C_CHAT_MESSAGE: 'S2C_CHAT_MESSAGE',
     S2C_KEY_RECEIVED: 'S2C_KEY_RECEIVED',
+    S2C_AVATAR_UPLOADED: 'S2C_AVATAR_UPLOADED',
+    
 };

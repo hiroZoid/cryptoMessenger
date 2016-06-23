@@ -4,6 +4,7 @@ define(function (require) {
     var appConstants = require('/app-constants.js');
     var facade = require('/app/core/facade.js');
 
+    var socketId = null;
     var aesKey = null;
     var currentUser = null;
 
@@ -38,6 +39,15 @@ define(function (require) {
         getAesKey: function () {
             return aesKey;
         },
+
+        setSocketId: function (id) {
+            socketId = id;
+        },
+
+        getSocketId: function () {
+            return socketId;
+        }
+
     };
 
 });

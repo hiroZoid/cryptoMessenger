@@ -7,6 +7,12 @@ define(function (require) {
         var facade = require('/app/core/facade.js');
         var socket = require('/socket.io/socket.io.js')();
         var keyUtils = require('/app/core/key-utils.js');
+        var appProxy = require('/app/core/app-proxy.js');
+
+        socket.on('connect', function () {
+            appProxy.setSocketId(socket.io.engine.id);
+            console.log('appProxy.getSocketId()', appProxy.getSocketId());
+        });
 
         function encryptAndEmit(notification, message) {
             if (message === undefined) {
@@ -96,6 +102,10 @@ define(function (require) {
 
         socket.on(appConstants.S2C_KEY_RECEIVED, function () {
             decryptAndSendNotification(appConstants.S2C_KEY_RECEIVED);
+        });
+        
+        socket.on(appConstants.S2C_AVATAR_UPLOADED, function () {
+            decryptAndSendNotification(appConstants.S2C_AVATAR_UPLOADED);
         });
 
         console.log('socket-setup.js required');

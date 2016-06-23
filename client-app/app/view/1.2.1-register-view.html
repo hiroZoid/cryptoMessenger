@@ -7,17 +7,22 @@
 
 <body>
     <div class="cm-fill">
-        <form action="#" class="form-signin" style="max-width: 20em; margin: auto">
+        <form action="#" class="cm-form form-signin" style="max-width: 20em; margin: auto" enctype="multipart/form-data">
             <h2 class="form-signin-heading">Register:</h2>
 
-            <label for="username" class="sr-only">Username</label>
-            <input type="text" id="username" class="cm-username form-control" placeholder="Username" required autofocus>
+            <input type="text" class="cm-username form-control" placeholder="Username" required autofocus>
+            <br/>
 
-            <label for="nickname" class="sr-only">Nickname</label>
-            <input type="text" id="nickname" class="cm-nickname form-control" placeholder="Nickname" required>
+            <input type="text" class="cm-nickname form-control" placeholder="Nickname" required>
+            <br/>
 
-            <label for="password" class="sr-only">Password</label>
-            <input type="password" id="password" class="cm-password form-control" placeholder="Password" required>
+            <input type="password" class="cm-password form-control" placeholder="Password" required>
+            <input type="password" class="cm-retype form-control" placeholder="Retype password" required>
+
+            <br/>
+            <label>Avatar Image:</label>
+            <input type="file" accept="image/*" name="avatarImage" class="cm-avatar form-control-file" />
+            <br/>
 
             <button class="cm-submit btn btn-lg btn-primary btn-block">Register</button>
         </form>

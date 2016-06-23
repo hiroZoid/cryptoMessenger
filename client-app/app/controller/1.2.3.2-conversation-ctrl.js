@@ -31,7 +31,7 @@ define(function (require) {
 
         facade.subscribe(appConstants.CHAT_HISTORY_UPDATED, function () {
             if (chatProxy.getRecipientUser() !== null) {
-                avatar.src = chatProxy.getRecipientUser().avatar;
+                avatar.src = '/img/' + chatProxy.getRecipientUser().avatar;
                 recipientName.textContent = chatProxy.getRecipientUser().nickname;
             } else {
                 avatar.src = appProxy.getDefaultAvatarUrl();

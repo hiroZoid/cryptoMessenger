@@ -5,6 +5,7 @@ var mongoose = require('mongoose');
 var userSchema = new mongoose.Schema({
     nickname: { type: mongoose.Schema.Types.String, trim: true },
     username: { type: mongoose.Schema.Types.String, required: true, unique: true, trim: true },
+    avatar: { type: mongoose.Schema.Types.String, trim: true },
     password: { type: mongoose.Schema.Types.String, required: true }
 }, { timestamps: true });
 
@@ -12,11 +13,12 @@ var userModel = mongoose.model('user', userSchema);
 
 module.exports = {
 
-    persist: function (nickname, username, password) {
+    persist: function (nickname, username, password, avatar) {
         return new userModel({
             nickname: nickname,
             username: username,
-            password: password
+            password: password,
+            avatar: avatar
         }).save();
     },
 
@@ -32,7 +34,7 @@ module.exports = {
     },
 
     retrieveAllExcept: function (userId) {
-        return userModel.find({ _id: { $ne: userId } }).select('_id nickname').exec();
+        return userModel.find({ _id: { $ne: userId } }).select('_id nickname avatar').exec();
     },
     
     findByNickName: function (nickname) {

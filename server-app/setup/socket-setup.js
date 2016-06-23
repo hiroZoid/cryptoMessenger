@@ -26,7 +26,7 @@ module.exports.setup = function (httpServer) {
 
         socket.on(appConstants.C2S_REGISTER_USER, function (encryptedUserData) {
             var userData = decryptObject(socket, encryptedUserData);
-            socketBusiness.registerUser(socket, userData.nickname, userData.username, userData.password);
+            socketBusiness.registerUser(socket, userData.nickname, userData.username, userData.password, userData.avatar, userData.avatar);
             console.log(userData);
         });
 
