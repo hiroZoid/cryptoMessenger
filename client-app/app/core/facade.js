@@ -15,7 +15,7 @@ define(function (require) {
         
         unSubscribe: function (notification, callback) {
             if (this.pool[notification] !== undefined) {
-                let i = this.pool[notification].indexOf(callback);
+                i = this.pool[notification].indexOf(callback);
                 if (i > -1) {
                     this.pool[notification].slice(i, 1);
                 }
