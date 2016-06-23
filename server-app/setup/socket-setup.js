@@ -2,9 +2,17 @@
 
 module.exports.setup = function (httpServer) {
 
-    let io = require('socket.io').listen(httpServer);
-    let socketBusiness = require('../business/socket-business.js');
     let appConstants = require('../app-constants.js');
+    let socketBusiness = require('../business/socket-business.js');
+    var keyBusiness = require('../business/key-business.js');
+    let io = require('socket.io').listen(httpServer);
+
+    function decryptObject(socket, encryptedObject) {
+        var aesKey = socketBusiness.getAesKey(socket);
+        var plaintext = keyBusiness.aesDecrypt(encryptedObject, aesKey);
+        var object = JSON.parse(plaintext);
+        return object;
+    }
 
     io.on('connection', function (socket) {
 
@@ -16,12 +24,14 @@ module.exports.setup = function (httpServer) {
             console.log('Socket client disconnected.');
         });
 
-        socket.on(appConstants.C2S_REGISTER_USER, function (userData) {
+        socket.on(appConstants.C2S_REGISTER_USER, function (encryptedUserData) {
+            var userData = decryptObject(socket, encryptedUserData);
             socketBusiness.registerUser(socket, userData.nickname, userData.username, userData.password);
             console.log(userData);
         });
 
-        socket.on(appConstants.C2S_LOG_IN_USER, function (credentials) {
+        socket.on(appConstants.C2S_LOG_IN_USER, function (encryptedCredentials) {
+            var credentials = decryptObject(socket, encryptedCredentials);
             socketBusiness.loginUser(socket, credentials.username, credentials.password);
             console.log(credentials);
         })
@@ -34,17 +44,19 @@ module.exports.setup = function (httpServer) {
             socketBusiness.sendContactList(socket);
         });
 
-        socket.on(appConstants.C2S_GET_CHAT_HISTORY, function (contactUserId) {
+        socket.on(appConstants.C2S_GET_CHAT_HISTORY, function (encryptedContactUserId) {
+            var contactUserId = decryptObject(socket, encryptedContactUserId);
             socketBusiness.sendFullHistory(socket, contactUserId);
         });
 
-        socket.on(appConstants.C2S_CHAT_MESSAGE, function (msg) {
-            console.log(msg);
+        socket.on(appConstants.C2S_CHAT_MESSAGE, function (encryptedMessage) {
+            var message = decryptObject(socket, encryptedMessage);
+            console.log(message);
             socketBusiness.handleChatMessageReceived(
                 socket,
-                msg.sender,
-                msg.recipient,
-                msg.message
+                message.sender,
+                message.recipient,
+                message.message
             );
         });
 
@@ -53,6 +65,6 @@ module.exports.setup = function (httpServer) {
         });
 
     });
-    
+
     console.log('socket-setup.js executed.');
 };

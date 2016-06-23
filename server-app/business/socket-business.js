@@ -12,8 +12,19 @@ var socketsById = {};
 // hashmap to sockets by user._id
 var socketsByUserId = {};
 
+function encryptAndEmit(socket, notification, message) {
+    if (message === undefined) {
+        socket.emit(notification);
+    } else {
+        var plaintext = JSON.stringify(message);
+        var encrypted = keyBusiness.aesEncrypt(plaintext, socketsById[socket.id].aesKey);
+        socket.emit(notification, encrypted);
+    }
+}
+
+
 var emitDataBaseError = function (socket, msg, err) {
-    socket.emit(appConstants.S2C_DATABASE_ERROR, msg + '\n\n' + err);
+    encryptAndEmit(socket, appConstants.S2C_DATABASE_ERROR, msg + '\n\n' + err);
 };
 
 module.exports = {
@@ -39,12 +50,12 @@ module.exports = {
         userDao.retrieve(username, password)
             .then(function (user) {
                 if (user == null) {
-                    socket.emit(appConstants.S2C_INVALID_CREDENTIALS, null);
+                    encryptAndEmit(socket, appConstants.S2C_INVALID_CREDENTIALS, null);
                 } else {
                     console.log('user retrieved', user);
                     socketsById[socket.id].user = user;
                     socketsByUserId[user._id] = socket;
-                    socket.emit(appConstants.S2C_USER_LOGGED_IN, user);
+                    encryptAndEmit(socket, appConstants.S2C_USER_LOGGED_IN, user);
                 }
             })
             .catch(emitDataBaseError.bind(null, socket, 'Could not retrieve user.'));
@@ -60,9 +71,9 @@ module.exports = {
             .then(function (user) {
                 // sleep(1000);
                 if (user == null) {
-                    socket.emit(appConstants.S2C_USERNAME_EXISTS, null);
+                    encryptAndEmit(socket, appConstants.S2C_USERNAME_EXISTS, null);
                 } else {
-                    socket.emit(appConstants.S2C_USER_REGISTERED, user);
+                    encryptAndEmit(socket, appConstants.S2C_USER_REGISTERED, user);
                 }
             })
             .catch(emitDataBaseError.bind(null, socket, 'Could not register user.'));
@@ -71,7 +82,7 @@ module.exports = {
     sendContactList: function (socket) {
         userDao.retrieveAllExcept(socketsById[socket.id].user._id)
             .then(function (contactList) {
-                socket.emit(appConstants.S2C_SEND_CONTACT_LIST, contactList);
+                encryptAndEmit(socket, appConstants.S2C_SEND_CONTACT_LIST, contactList);
                 console.log('contactList retrieved');
             })
             .catch(emitDataBaseError.bind(null, socket, 'Could not get contact list.'));
@@ -87,7 +98,7 @@ module.exports = {
     sendFullHistory: function (socket, contactUserId) {
         messageDao.getFullHistory(socketsById[socket.id].user._id, contactUserId)
             .then(function (history) {
-                socket.emit(appConstants.S2C_SEND_CHAT_HISTORY, {
+                encryptAndEmit(socket, appConstants.S2C_SEND_CHAT_HISTORY, {
                     contactUserId: contactUserId,
                     history: history
                 });
@@ -99,13 +110,14 @@ module.exports = {
         messageDao.persist(sender, recipient, message)
             .then(function (chatMessage) {
                 // Send back the message to sender
-                socket.emit(
+                encryptAndEmit(socket,
                     appConstants.S2C_CHAT_MESSAGE,
                     chatMessage
                 );
                 // Send the message to recipient if logged
                 if (socketsByUserId[chatMessage.recipient] !== undefined) {
-                    socketsByUserId[chatMessage.recipient].emit(
+                    encryptAndEmit(
+                        socketsByUserId[chatMessage.recipient],
                         appConstants.S2C_CHAT_MESSAGE,
                         chatMessage
                     );
@@ -118,7 +130,11 @@ module.exports = {
     registerAesKey: function (socket, encryptedAesKey) {
         socketsById[socket.id].aesKey = keyBusiness.privateKeyDecrypt(encryptedAesKey);
         console.log('Decrypted key:', socketsById[socket.id].aesKey);
-        socket.emit(appConstants.S2C_KEY_RECEIVED);
+        encryptAndEmit(socket, appConstants.S2C_KEY_RECEIVED);
     },
+
+    getAesKey: function (socket) {
+        return socketsById[socket.id].aesKey;
+    }
 
 };
