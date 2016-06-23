@@ -89,7 +89,7 @@ module.exports = {
 
         messageDao.getConversationList(socketsById[socket.id].user._id)
             .then(function (x) {
-                console.log(x);
+                console.log('x', x, x.length);
             }).catch(function (err) {
                 console.log(err);
             });
