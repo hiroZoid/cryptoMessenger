@@ -8,11 +8,11 @@ var messageSchema = new mongoose.Schema({
     message: { type: mongoose.Schema.Types.String, required: true }
 }, { timestamps: true });
 
-var messageModel = mongoose.model('message', messageSchema);
+var MessageModel = mongoose.model('message', messageSchema);
 
 module.exports = {
     persist: function (sender, recipient, message) {
-        return new messageModel({
+        return new MessageModel({
             sender: sender,
             recipient: recipient,
             message: message
@@ -20,11 +20,37 @@ module.exports = {
     },
 
     getFullHistory: function (userId1, userId2) {
-        return messageModel.find({
+        return MessageModel.find({
             $or: [
                 { sender: userId1, recipient: userId2 },
                 { sender: userId2, recipient: userId1 }
             ]
         }).exec();
+    },
+
+    getConversationList: function (userId) {
+        return MessageModel
+            .aggregate([
+                { $match: { sender: userId } },
+                {
+                    $group: {
+                        _id: "$recipient",
+                        r: { $max: "$updatedAt" }
+                    }
+                }
+            ])
+            .exec();
+        // return MessageModel
+        //     .find({
+        //         $or: [
+        //             { sender: userId },
+        //             { recipient: userId }
+        //         ]
+        //     })
+        //     .sort({ updatedAt: -1 })
+        //     .populate('sender', '_id username nickname')
+        //     .populate('recipient', '_id username nickname')
+        //     .select('updatedAt')
+        //     .exec();
     }
 };

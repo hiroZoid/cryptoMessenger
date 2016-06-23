@@ -46,9 +46,13 @@ module.exports.setup = function (httpServer) {
                 msg.recipient,
                 msg.message
             );
-        })
+        });
+
+        socket.on(appConstants.C2S_SENDING_KEY, function (encryptedAesKey) {
+            socketBusiness.registerAesKey(socket, encryptedAesKey);
+        });
 
     });
-
+    
     console.log('socket-setup.js executed.');
 };

@@ -12,11 +12,19 @@ var userModel = mongoose.model('user', userSchema);
 
 module.exports = {
 
+    persist: function (nickname, username, password) {
+        return new userModel({
+            nickname: nickname,
+            username: username,
+            password: password
+        }).save();
+    },
+
     retrieve: function (username, password) {
         return userModel.findOne({
             username: username,
             password: password
-        }).exec();
+        }).select('_id nickname').exec();
     },
 
     retrieveAll: function () {
@@ -26,12 +34,8 @@ module.exports = {
     retrieveAllExcept: function (userId) {
         return userModel.find({ _id: { $ne: userId } }).select('_id nickname').exec();
     },
-
-    persist: function (nickname, username, password) {
-        return new userModel({
-            nickname: nickname,
-            username: username,
-            password: password
-        }).save();
+    
+    findByNickName: function (nickname) {
+        
     },
 }

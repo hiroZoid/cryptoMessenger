@@ -6,7 +6,7 @@
 requirejs.config({
     baseUrl: '/app/lib',
     shim: {
-        'bootstrap': { 'deps': ['jquery'] }
+        'bootstrap': { 'deps': ['jquery'] },
     },
     paths: {
         app: '../app'

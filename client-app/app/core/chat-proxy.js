@@ -40,12 +40,7 @@ define(function (require) {
     });
 
     facade.subscribe(appConstants.S2C_CHAT_MESSAGE, function (msg) {
-        var contactUserId = (msg.sender._id == appProxy.getCurrentUserId() ? msg.recipient : msg.sender);
-        /*
-        if (chatData[contactUserId].history === undefined) {
-            chatData[contactUserId].history = [];
-        }
-        */
+        var contactUserId = (msg.sender == appProxy.getCurrentUserId() ? msg.recipient : msg.sender);
         chatData[contactUserId].history.push(msg);
         facade.sendNotification(appConstants.CHAT_HISTORY_UPDATED, contactUserId);
     });

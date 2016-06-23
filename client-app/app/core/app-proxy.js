@@ -4,6 +4,7 @@ define(function (require) {
     var appConstants = require('/app-constants.js');
     var facade = require('/app/core/facade.js');
 
+    var aesKey = null;
     var currentUser = null;
 
     facade.subscribe(appConstants.S2C_USER_LOGGED_IN, function (user) {
@@ -28,8 +29,15 @@ define(function (require) {
 
         getDefaultAvatarUrl: function () {
             return './img/stormtrooper.jpeg';
-        }
+        },
 
+        setAesKey: function (key) {
+            aesKey = key;
+        },
+
+        getAesKey: function () {
+            return aesKey;
+        },
     };
 
 });

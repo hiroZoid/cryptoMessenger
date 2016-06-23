@@ -6,6 +6,7 @@ define(function (require) {
         pool: {},
         
         subscribe: function (notification, callback) {
+            console.log('Subscribed to notification: ', notification, callback);
             if (this.pool[notification] === undefined) {
                 this.pool[notification] = [];
             }
@@ -22,6 +23,7 @@ define(function (require) {
         },
         
         sendNotification: function (notification, obj) {
+            console.log('Sending notification: ', notification, obj);
             if (this.pool[notification] !== undefined) {
                 this.pool[notification].forEach(function (callback) {
                     callback(obj);

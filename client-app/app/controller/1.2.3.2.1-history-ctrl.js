@@ -44,6 +44,8 @@ define(function (require) {
         }
 
         facade.subscribe(appConstants.CHAT_HISTORY_UPDATED, (function (recipientUserId) {
+            console.log('recipientUserId: ', recipientUserId);
+            console.log('chatProxy.getRecipientUserId(): ', chatProxy.getRecipientUserId());
             if (recipientUserId !== undefined
                 && chatProxy.getRecipientUser() !== null
                 && chatProxy.getRecipientUserId() === recipientUserId) {

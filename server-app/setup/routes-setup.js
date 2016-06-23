@@ -21,6 +21,16 @@ module.exports = function (app) {
         );
     });
 
+    app.get('/public-key', function (request, response) {
+        response.sendFile(serverPath + '/rsa-keys/rsa_1024_pub.pem');
+    });
+
+    /*
+    app.get('/private-key', function (request, response) {
+        response.sendFile(serverPath + '/rsa-keys/rsa_1024_priv.pem');
+    });
+    */
+    
     app.get('*', function (request, response) {
         response.end('This is nowhere. Path Hit: ' + request.url);
     });

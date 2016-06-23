@@ -2,7 +2,9 @@
 
 var userDao = require('../dao/user-dao.js');
 var messageDao = require('../dao/message-dao.js');
+var contactDao = require('../dao/contact-dao.js');
 var appConstants = require('../app-constants.js');
+var keyBusiness = require('./key-business.js')
 
 // hashmap to sockets by socket.id
 var socketsById = {};
@@ -73,6 +75,13 @@ module.exports = {
                 console.log('contactList retrieved');
             })
             .catch(emitDataBaseError.bind(null, socket, 'Could not get contact list.'));
+
+        messageDao.getConversationList(socketsById[socket.id].user._id)
+            .then(function (x) {
+                console.log(x);
+            }).catch(function (err) {
+                console.log(err);
+            });
     },
 
     sendFullHistory: function (socket, contactUserId) {
@@ -106,5 +115,10 @@ module.exports = {
             .catch(emitDataBaseError.bind(null, socket, 'Could not deliver message.'));
     },
 
+    registerAesKey: function (socket, encryptedAesKey) {
+        socketsById[socket.id].aesKey = keyBusiness.privateKeyDecrypt(encryptedAesKey);
+        console.log('Decrypted key:', socketsById[socket.id].aesKey);
+        socket.emit(appConstants.S2C_KEY_RECEIVED);
+    },
 
 };
