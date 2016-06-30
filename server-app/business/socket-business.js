@@ -5,6 +5,8 @@ var messageDao = require('../dao/message-dao.js');
 var contactDao = require('../dao/contact-dao.js');
 var appConstants = require('../app-constants.js');
 var keyBusiness = require('./key-business.js')
+var fs = require('fs');
+let serverPath = process.cwd();
 
 // hashmap to sockets by socket.id
 var socketsById = {};
@@ -79,7 +81,21 @@ module.exports = {
                 if (user == null) {
                     encryptAndEmit(socket, appConstants.S2C_USERNAME_EXISTS, null);
                 } else {
-                    encryptAndEmit(socket, appConstants.S2C_USER_REGISTERED, user);
+                    var newFilename = null;
+                    if (user.avatar && user.avatar.length > 0) {
+                        newFilename = user._id.toString() + '-' + user.avatar;
+                        fs.rename(serverPath + '/client-app/img/' + user.avatar, serverPath + '/client-app/img/' + newFilename, function (err) {
+                            if (err) console.log('ERROR: ' + err);
+                        });
+                        userDao.update(user._id, { $set: { avatar: newFilename } })
+                            .then(function (user) {
+                                console.log(user);
+                                encryptAndEmit(socket, appConstants.S2C_USER_REGISTERED, user);
+                            })
+                            .catch(emitDataBaseError.bind(null, socket, 'Could not register user.'));
+                    } else {
+                        encryptAndEmit(socket, appConstants.S2C_USER_REGISTERED, user);
+                    }
                 }
             })
             .catch(emitDataBaseError.bind(null, socket, 'Could not register user.'));
@@ -96,8 +112,13 @@ module.exports = {
                 } else {
                     console.log('Credentials are valid');
 
+                    var newFilename = null;
                     if (avatar.length > 0) {
                         filename = socket.id.substring(2) + avatar.substring(avatar.lastIndexOf('.'));
+                        newFilename = user._id.toString() + '-' + filename;
+                        fs.rename(serverPath + '/client-app/img/' + filename, serverPath + '/client-app/img/' + newFilename, function (err) {
+                            if (err) console.log('ERROR: ' + err);
+                        });
                     }
 
                     var updateObject = { $set: {} };
@@ -107,8 +128,8 @@ module.exports = {
                     if (password && password !== '') {
                         updateObject['$set'].password = password;
                     }
-                    if (filename !== null) {
-                        updateObject['$set'].avatar = filename;
+                    if (newFilename !== null) {
+                        updateObject['$set'].avatar = newFilename;
                     }
 
                     console.log('updateObject', updateObject);
@@ -116,12 +137,11 @@ module.exports = {
                     userDao.update(user._id, updateObject)
                         .then(function (user) {
                             console.log(user);
-                            // sleep(1000);
-                            // if (user == null) {
-                            //     encryptAndEmit(socket, appConstants.S2C_USERNAME_EXISTS, null);
-                            // } else {
-                            //     encryptAndEmit(socket, appConstants.S2C_USER_REGISTERED, user);
-                            // }
+                            if (user == null) {
+                                emitDataBaseError.bind(null, socket, 'Could not register user.')
+                            } else {
+                                encryptAndEmit(socket, appConstants.S2C_USER_UPDATED, user);
+                            }
                         })
                         .catch(emitDataBaseError.bind(null, socket, 'Could not register user.'));
                 }

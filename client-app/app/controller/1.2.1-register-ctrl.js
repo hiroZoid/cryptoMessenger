@@ -73,6 +73,7 @@ define(function (require) {
             retypeInput.value = '';
             avatarInput.value = '';
             alert('User sucessfully created!\nNow you can login with your user.');
+            facade.sendNotification(appConstants.NAVBAR_ITEM_CLICKED, appConstants.LOG_IN_TAB);
         });
 
         facade.subscribe(appConstants.S2C_USERNAME_EXISTS, function () {

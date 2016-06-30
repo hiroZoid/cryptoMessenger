@@ -50,7 +50,7 @@ define(function (require) {
             }
             this.selectedChildCtrl.render();
         };
-
+        
         facade.subscribe(appConstants.S2C_USER_LOGGED_IN, function () {
             this.selectedChildCtrl = this.children.chatCtrl;
             this.render();

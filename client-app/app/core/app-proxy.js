@@ -29,7 +29,7 @@ define(function (require) {
         },
 
         getDefaultAvatarUrl: function () {
-            return './img/stormtrooper.jpeg';
+            return './img/stormtrooper-mask.png';
         },
 
         setAesKey: function (key) {

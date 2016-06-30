@@ -82,7 +82,7 @@ define(function (require) {
             retypeInput.value = '';
             avatarInput.value = '';
             currentPasswordInput.value = '';
-            alert('User sucessfully created!\nNow you can login with your user.');
+            alert('User sucessfully updates!\nPlease logout and login again.');
         });
 
         // =====================================================================
